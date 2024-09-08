@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+	 <script>
+				  $(function() {
+				    $('[data-toggle="tooltip"]').tooltip()
+				  })
+				</script>
+
+	<div class="container">
+		<div class="text-center mt-5 mb-3">
+			<h1>{{stationData['alias']}}</h1>
+		</div>
+
+		<table class="table table-hover table-responsive-sm">
+			{% for key, value in weatherData %}
+				{% if key in isMeasurement and value is not null %}
+					<tr>
+						<td scope="row" class="h5">{{measurementNames[key]}}</td>
+						<td class="text-center">
+							<i class="{{measurementIcons[key]}}"></i>
+						</td>
+						<td class="h5">{{value | round(measurementPrecission[key])}}{{measurementUnits[key]}}</td>
+					</tr>
+				{% endif %}
+			{% endfor %}
+
+
+			{% for key, value in weatherData %}
+				{% if key in sensorAttributes and value is not null %}
+					<tr>
+						<td scope="row" class="h5">{{measurementNames[key]}}</td>
+						<td class="text-center">
+							<i class="{{measurementIcons[key]}}"></i>
+						</td>
+						<td class="h5">
+							{% if value.timestamp is defined %}
+								{{ value|date('d.m.Y H:i:s') }}
+							{% else %}
+								{{ value }}
+							{% endif %}
+							{{measurementUnits[key]}}</td>
+					</tr>
+				{% endif %}
+			{% endfor %}
+		</table>
+
+		<div id="detailPanel">
+			<div class="card">
+				<div class="card-header" id="headingOne">
+					<h5 class="mb-0">
+						<button class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#collapsedDetails" aria-expanded="true" aria-controls="collapsedDetails">
+							<i class="bi bi-search"></i>
+							Details
+						</button>
+					</h5>
+				</div>
+				<div id="collapsedDetails" class="collapse" aria-labelledby="headingOne" data-parent="#detailPanel">
+					<div class="card-body">
+						<table class="table table-hover table-responsive-sm">
+							<tr>
+								<td scope="row" class="h5">Flags</td>
+								<td class="text-center">
+									<i class="bi bi-flag"></i>
+								</td>
+								<td class="h5">
+									{% for key, value in stationFlags %}
+										{% if value == true %}
+											<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="{{stationFlagNames[key]}}">
+												<button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="tooltip" data-placement="top" disabled>
+													<i class="{{stationFlagIcons[key]}} light"></i>
+												</button>
+											</span>
+										{% endif %}
+
+									{% endfor %}
+							
+								</td>
+							</tr>
+							{% for key, value in weatherData %}
+								{% if key in detailedAttributes and value is not null %}
+									<tr>
+										<td scope="row" class="h5">{{measurementNames[key]}}</td>
+										<td class="text-center">
+											<i class="{{measurementIcons[key]}}"></i>
+										</td>
+										<td class="h5">{{value}}{{measurementUnits[key]}}</td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						</table>
+
+						<a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{{path('app_station_detail_json', {id: stationData['dev_id'] })}}">View JSON</a>
+					</div>
+				</div>
+			</div>
+			<a class="btn btn-outline-primary mt-2 mb-2" href="{{path('app_graph', {id: stationData['dev_id']})}}" role="button">
+				<i class="bi bi-graph-up"></i>
+				Show History Graph</a>
+		</div>
+	</div>
+{% endblock %}

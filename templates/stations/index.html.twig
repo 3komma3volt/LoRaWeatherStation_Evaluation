@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="text-center mt-5  mb-3">
+			<h1>Ilmweather Stations</h1>
+		</div>
+
+		<form action="{{ path('app_compare') }}" method="POST">
+			<table class="table table-hover border table-fit">
+				<tbody>
+
+					{% for station in weather_stations %}
+                    {% set compareEnabled = date(station.lastUpdate) < date('-30 minutes') ? 'disabled' : '' %}
+    
+						<tr>
+							<td class="align-middle" width="1%">
+								<input class="form-check-input" type="checkbox" value="{{ station.devid }}" {{compareEnabled}} name="stations[]" id="stations"></td>
+							<td onclick="window.location='{{ path('app_station_detail', {id: station.devid }) }}'" class="align-middle w-auto">
+								<h5 class="mb-1">{{ station.alias }}</h5>
+								{{ station.lastUpdate | date("d.m.Y H:i:s") }}
+							</td>
+							<td class="align-middle text-end">
+								{% if date(station.lastUpdate) < date('-30 minutes') %}
+									<div class="badge bg-danger ms-1 me-1">
+										<i class="bi bi-exclamation-triangle me-1"></i>Offline</div>
+                         
+								{% else %}
+									<div class="badge bg-success ms-1 me-1">
+										<i class="bi bi-check me-1"></i>OK</div>
+
+								{% endif %}
+								{% if (station.status.maintenence == true) %}
+									<div class="badge bg-warning ms-1 me-1">
+										<i class="bi bi-wrench me-1"></i>Maintenance</div>
+								{% endif %}
+								{% if (station.status.beta == true) %}
+									<div class="badge bg-info ms-1 me-1">
+										<i class="bi bi-bug-fill me-1"></i>Beta</div>
+								{% endif %}
+
+							</td>
+						</tr>
+
+					{% endfor %}
+
+				</tbody>
+			</table>
+			<button type="submit" id="btnCompare" class="btn btn-secondary disabled">Compare</button>
+		</form>
+	</div>
+	 <script>
+
+	  var minimum = 2;
+	  $('input.form-check-input').on('click', function(evt) {
+	    if ($('.form-check-input:checked').length >= minimum) {
+	      $('#btnCompare').removeClass('disabled');
+	    } else {
+	      $('#btnCompare').addClass('disabled');
+	    }
+	  });
+	</script>
+
+</div>{% endblock %}

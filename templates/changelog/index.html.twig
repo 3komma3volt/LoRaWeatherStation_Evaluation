@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="container">
+  <div class="text-center mt-5">
+      <h1>Changelog</h1>
+    </div>
+      <div class="row justify-content-center">
+          <div class="col-lg-8 col-md-10 col-12">
+
+            <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 3.0.0</span> - 09.08.2024</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Complete rewrite of code using Symfony 7</li>
+              </ul>       
+  
+          <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 2.5.0</span> - 05.03.2024</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Fixed graphical problems</li>
+                  <li class="text-muted ml-3">Improved forecast</li>
+              </ul>        
+              
+          <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 2.4.6</span> - 22.02.2024</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Added comparison of graphs</li>
+                  <li class="text-muted ml-3">Added weather forecast using Zambretti algorythm</li>
+                  <li class="text-muted ml-3">Added switching of color themes</li>
+                  <li class="text-muted ml-3">Added a lot of error handling</li>
+              </ul>
+  
+              <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 2.3.0</span> - 05.02.2024</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Added comparison of station data</li>
+                  <li class="text-muted ml-3">Fixed null data error on dashboard</li>      
+                  <li class="text-muted ml-3">Minor graphical improvements</li>   
+              </ul>
+  
+              <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 2.2.0</span> - 22.01.2024</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Removed name parameter for stations</li>
+                  <li class="text-muted ml-3">Minor graphical improvements</li>
+                  <li class="text-muted ml-3">Fixed faulty device sensor check, now all stations sensor values are visible</li>
+                  <li class="text-muted ml-3">Added flags to stations</li>
+                  <li class="text-muted ml-3">Added rain calculations</li>       
+                  <li class="text-muted ml-3">Upgraded PHP backend to PHP 8</li>             
+              </ul>
+            
+              <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 2.1.0</span> - 21.12.2023</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Added station list to navbar</li>
+                  <li class="text-muted ml-3">Database overhaul for more performance</li>
+                  <li class="text-muted ml-3">Preperations for new LoRa stations</li>
+                  <li class="text-muted ml-3">Added status to stations</li>
+                  <li class="text-muted ml-3">Fixed data types in JSON outputs</li>
+                  <li class="text-muted ml-3">Added changelog</li>
+              </ul>
+              
+              <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 2.0.0</span> - 14.12.2023</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Complete code rewrite</li>
+                  <li class="text-muted ml-3">Upgraded own CSS to Bootstrap 5</li>
+                  <li class="text-muted ml-3">Improved database structure</li>
+                  <li class="text-muted ml-3">Changed own CSS graphs to NPM graphs</li>
+                  <li class="text-muted ml-3">Improved battery charge calculation</li>
+              </ul>
+
+               <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 1.1.0</span> - 11.08.2022</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Added navigation</li>
+                  <li class="text-muted ml-3">Added history chart</li>
+                  <li class="text-muted ml-3">Added data export</li>
+                  <li class="text-muted ml-3">Added JSON interface</li>
+              </ul>             
+        
+  
+              <h5 class="mt-4"> <span class="p-2 bg-light shadow rounded text-dark">Version 1.0.0</span> - 11.08.2022</h5>
+              <ul class="mt-3">
+                  <li class="text-muted ml-3">Initial Quick and Dirty version</li>
+              </ul>
+  
+          </div><!--end col-->
+      </div><!--end row-->
+  </div>
+{% endblock %}

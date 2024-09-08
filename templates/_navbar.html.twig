@@ -1,0 +1,47 @@
+  <nav class="navbar navbar-expand-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ path('app_dashboard') }}">Ilmweather</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_dashboard') }}">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_stations') }}">Station Overview</a>
+          </li>
+
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarStations" role="button" data-bs-toggle="dropdown" aria-expanded="false">Stations</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarStations">
+
+        {% for station in getStationNames() %}
+               <li><a class="dropdown-item" href="{{ path('app_station_detail', {id:  station.dev_id } )}}">{{ station.alias }}</a></li>
+            {% endfor %}
+
+          </ul>
+        </li>
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarHelp" role="button" data-bs-toggle="dropdown" aria-expanded="false">Help</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarHelp">
+            <li><a class="dropdown-item" href="{{ path('app_api_doc') }}">API-Doc</a></li>
+            <li><a class="dropdown-item" href="{{ path('app_changelog') }}">Changelog</a></li>
+
+          </ul>
+        </li>  
+      </ul> 
+
+      <form method="post" id="themeChange">
+      <input type="hidden" name="colorTheme" value ="dark">
+       <div class="nav-item form-check form-switch">
+         <input class="form-check-input" type="checkbox" role="switch" name="colorTheme" value="light" id="changeColorTheme">
+         <label class="form-check-label" for="changeColorTheme">Dark</label>
+        </div>
+      </form>
+      </div>
+
+    </div>
+  </nav>

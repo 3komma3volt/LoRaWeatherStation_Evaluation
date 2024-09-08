@@ -1,0 +1,38 @@
+<div class='chart-container' style='position: relative; height:40vh;'>
+<canvas id='{{ chartName }}'></canvas>
+</div>
+
+
+<script>
+const ctx{{ chartName }} = document.getElementById('{{ chartName }}');
+
+new Chart(ctx{{ chartName }}, {
+  type: 'line',
+  data: {
+    labels: [{{ xAxis|raw }}],
+    datasets: [{
+      label: '{{ chartName }}',
+      data: [ {{ yAxis }}],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: '{{ chartName }}/{{ chartUnit }}'
+        },
+        beginAtZero: false
+
+      }
+    }
+  }
+});
+</script>

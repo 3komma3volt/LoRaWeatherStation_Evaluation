@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Ilmweather 3.0.0</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/jpg" href="{{ asset('build/images/favicon.ico') }}" />
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+
+    {{ include('_navbar.html.twig') }}
+
+
+   {% block body %}{% endblock %}
+    </body>
+
+    <div class="container mt-5 mb-3"></div>
+    <footer class="footer fixed-bottom border-top">
+      <div class="container">
+      <p class="text-center">&copy; 2023 Ilmweather.</p>
+      </div>
+    </footer>
+    
+    </body>
+    </html>

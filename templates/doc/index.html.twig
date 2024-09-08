@@ -1,0 +1,493 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="container">
+		<!-- MAIN -->
+		<div class="main">
+			<!-- MAIN CONTENT -->
+			<div class="main-content">
+				<div class="container-fluid">
+					<h3 class="page-title">Dashboard JSON</h3>
+					<p>The dashboard JSON shows the average of data sets of every station, which is not older than 10 minutes.</p>
+				<p>All data from the dashboard are available as JSON data from the URL , <code>{{ app.request.getSchemeAndHttpHost() }}{{path('app_dashboard_json')}}</code>. The former URL index.php?json=1 is running in legacy mode and will be turned off in futures releases! </p>
+        <p>Some parameters are for compatibility or legacy mode only.</p>
+					<div class="row">
+						<div class="col-md-7">
+							<!-- TABLE HOVER -->
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">Request</h3>
+								</div>
+								<div class="panel-body">
+									<table class="table table-hover">
+										<thead>
+											<tr>
+												<th>Parameter</th>
+												<th>Type</th>
+												<th>Format</th>
+												<th>#</th>
+												<th>Description</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>datetime</td>
+												<td><code>string</code></td>
+												<td><code>yyy-mm-dd hh:mm:ss</code></td>
+												<td><code></code></td>
+												<td>Datetime string of data's reading time</td>
+											</tr>
+											<tr>
+												<td>temperature</td>
+												<td><code>float</code></td>
+												<td><code>1.26</code></td>
+												<td><code></code></td>
+												<td>Temperature in °C</td>
+											</tr>
+											<tr>
+												<td>humidity</td>
+												<td><code>int</code></td>
+												<td><code>80</code></td>
+												<td><code></code></td>
+												<td>Humidity in %</td>
+											</tr>
+											<tr>
+												<td>pressure</td>
+												<td><code>int</code></td>
+												<td><code>950</code></td>
+												<td><code></code></td>
+												<td>Air pressure in hPa</td>
+											</tr>
+											<tr>
+												<td>battery</td>
+												<td><code>float</code></td>
+												<td><code>3.125</code></td>
+												<td><code>Legacy</code></td>
+												<td>Avg. station battery voltage</td>
+											</tr>
+											<tr>
+												<td>wind</td>
+												<td><code>float</code></td>
+												<td><code>5.12</code></td>
+												<td><code></code></td>
+												<td>Wind speed in m/s. Use wind * 3.6 for speed in km/h</td>
+											</tr>
+											<tr>
+												<td>brightness</td>
+												<td><code>int</code></td>
+												<td><code>125</code></td>
+												<td><code></code></td>
+												<td>Brightness in lx</td>
+											</tr>
+											<tr>
+												<td>radiation</td>
+												<td><code>null</code></td>
+												<td><code>null</code></td>
+												<td><code>Legacy</code></td>
+												<td>Radiation in uSv</td>
+											</tr>
+											<tr>
+												<td>dewpoint</td>
+												<td><code>float</code></td>
+												<td><code>4.2</code></td>
+												<td><code></code></td>
+												<td>Calculated dew point, if station has temperature and humidity sensor</td>
+											</tr>
+											<tr>
+												<td>sunrise</td>
+												<td><code>string</code></td>
+												<td><code>"08:06:30"</code></td>
+												<td><code></code></td>
+												<td>Time of sunrise in HH:mm:ss</td>
+											</tr>
+											<tr>
+												<td>sunset</td>
+												<td><code>string</code></td>
+												<td><code>16:11:29</code></td>
+												<td><code></code></td>
+												<td>Time of sunset in HH:mm:ss</td>
+											</tr>
+											<tr>
+												<td>moon_phase</td>
+												<td><code>string</code></td>
+												<td><code>Waning Crescent</code></td>
+												<td><code></code></td>
+												<td>Moon phase as string</td>
+											</tr>
+											<tr>
+												<td>moon_age</td>
+												<td><code>int</code></td>
+												<td><code>10</code></td>
+												<td><code></code></td>
+												<td>0: Full, 1: Waning Gibbous, 2: Third Quarter, 3: Waning Crescent, 4: New, 5: Waxing Crescent, 6: First Quarter, 7: Waxing Gibbous</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<!-- END TABLE HOVER -->
+						</div>
+						<div class="col-md-5">
+							<!-- TABLE HOVER -->
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">Response</h3>
+								</div>
+								<div class="panel-body">
+								<pre>{
+  "datetime": "2023-12-08 23:21:11",
+  "temperature": 1.53,
+  "humidity": 99,
+  "pressure": 956,
+  "battery": 3.893,
+  "wind": 5.78,
+  "brightness": 0,
+  "radiation": null,
+  "dewpoint": 4.2,
+  "moon_phase": "Waning Crescent",
+  "moon_age": 10,
+  "sunrise": "08:06:30", 
+  "sunset": "16:11:29"
+}</pre>
+								</div>
+							</div>
+							<!-- END TABLE HOVER -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END MAIN CONTENT -->
+			<div class="main-content">
+				<div class="container-fluid">
+					<h3 class="page-title">Station JSON</h3>
+					<p>The station JSON shows the last reading of the station. Update intervall is typically 5 minutes. Stations with data oder 30 minutes should be handled as offline.</p>
+				<p>All data from the dashboard are available as JSON data from the URL , <code>{{path('app_station_detail_json', {id: 'eui-7653d5asd0054c1f' })}}</code> where the station ID should match your desired station. The former URL stations.php?station=... is running in legacy mode and will be turned off in futures releases! </p>
+        <p>The best way to retrieve your station ID and / or the JSON URL is to click on the detail view on the station page and select "View JSON" </p>
+				<p>Some parameters are for compatibility or legacy mode only. Parameters marked with <code>LORA Only</code> can be <code>null</code> on web based stations</p>
+					<div class="row">
+						<div class="col-md-7">
+							<!-- TABLE HOVER -->
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">Request</h3>
+								</div>
+								<div class="panel-body">
+									<table class="table table-hover">
+										<thead>
+											<tr>
+												<th>Parameter</th>
+												<th>Type</th>
+												<th>Format</th>
+												<th>#</th>
+												<th>Description</th>
+											</tr>
+										</thead>
+										<tbody>
+										<tr>
+												<td>id</td>
+												<td><code>int</code></td>
+												<td><code>499633</code></td>
+												<td><code></code></td>
+												<td>Unique ID of reading, autoincrement</td>
+											</tr>
+											<tr>
+												<td>datetime</td>
+												<td><code>string</code></td>
+												<td><code>yyy-mm-dd hh:mm:ss</code></td>
+												<td><code></code></td>
+												<td>Datetime string of data's reading time</td>
+											</tr>
+											<tr>
+												<td>app_id</td>
+												<td><code>string</code></td>
+												<td><code>weatherdata-web</code></td>
+												<td><code></code></td>
+												<td>Shows if device sends data oder LORA or WEB</td>
+											</tr>
+											<tr>
+												<td>dev_id</td>
+												<td><code>string</code></td>
+												<td><code>92c31fadba2d349c</code></td>
+												<td><code></code></td>
+												<td>Unique device ID</td>
+											</tr>
+											<tr>
+												<td>dev_name</td>
+												<td><code>string</code></td>
+												<td><code>Flowerstreet South West</code></td>
+												<td><code></code></td>
+												<td>Readable device name</td>
+											</tr>
+											<tr>
+												<td>ttn_timestamp</td>
+												<td><code>string</code></td>
+												<td><code>2023-12-08T22:32:11.841080143Z</code></td>
+												<td><code>LORA only</code></td>
+												<td>Show the time when the webhook of thethingsnetwork was triggered</td>
+											</tr>
+											<tr>
+												<td>gtw_id</td>
+												<td><code>string</code></td>
+												<td><code>WEB</code></td>
+												<td><code></code></td>
+												<td>Show the gateway which received the data</td>
+											</tr>
+											<tr>
+												<td>gtw_rssi</td>
+												<td><code>int</code></td>
+												<td><code>-61</code></td>
+												<td><code>LORA only</code></td>
+												<td>Shows the reveicer signal strength indicator in dBm</td>
+											</tr>
+											<tr>
+												<td>gtw_snr</td>
+												<td><code>float</code></td>
+												<td><code>4.3</code></td>
+												<td><code>LORA only</code></td>
+												<td>Shows signal noise ratio in dB</td>
+											</tr>
+											<tr>
+												<td>dev_raw_payload</td>
+												<td><code>string</code></td>
+												<td><code>AOEAZAABdf8OwgAA</code></td>
+												<td><code>LORA only</code></td>
+												<td>Undecrypted LORA payload</td>
+											</tr>
+											<tr>
+												<td>dev_temperature</td>
+												<td><code>float</code></td>
+												<td><code>1.26</code></td>
+												<td><code></code></td>
+												<td>Temperature in °C if station has a temperature sensor</td>
+											</tr>
+											<tr>
+												<td>dev_humidity</td>
+												<td><code>int</code></td>
+												<td><code>80</code></td>
+												<td><code></code></td>
+												<td>Humidity in % if station has a humidity sensor</td>
+											</tr>
+											<tr>
+												<td>dev_pressure</td>
+												<td><code>int</code></td>
+												<td><code>950</code></td>
+												<td><code></code></td>
+												<td>Air pressure in hPa if station has a air pressure sensor</td>
+											</tr>
+											<tr>
+												<td>dev_battery</td>
+												<td><code>float</code></td>
+												<td><code>3.125</code></td>
+												<td><code>LORA only</code></td>
+												<td>Station battery voltage if station is battery powered</td>
+											</tr>
+											<tr>
+												<td>dev_wind</td>
+												<td><code>float</code></td>
+												<td><code>5.12</code></td>
+												<td><code></code></td>
+												<td>Wind speed in m/s. Use wind * 3.6 for speed in km/h, if station has a wind sensor</td>
+											</tr>
+											<tr>
+												<td>dev_brightness</td>
+												<td><code>int</code></td>
+												<td><code>125</code></td>
+												<td><code></code></td>
+												<td>Brightness in lx, if station has a brightness sensor</td>
+											</tr>
+											<tr>
+												<td>dev_rain</td>
+												<td><code>int</code></td>
+												<td><code>4</code></td>
+												<td><code></code></td>
+												<td>Rain in ml for the last hour</td>
+											</tr>
+											<tr>
+												<td>dev_radiation</td>
+												<td><code>null</code></td>
+												<td><code>null</code></td>
+												<td><code>Legacy</code></td>
+												<td>Radiation in uSv, if station has a radiation sensor</td>
+											</tr>
+											<tr>
+												<td>dev_forecast_number</td>
+												<td><code>int</code></td>
+												<td><code>18</code></td>
+												<td><code></code></td>
+												<td>Int of position of forecast: 0=>"Settled fine", 1=>"Fine weather", 2=>"Becoming fine", 3=>"Fine, 
+													4=>becoming less settled", 5=>"Fine, possible showers", 6=>"Fairly fine, improving", 7=>"Fairly fine, possible showers early", 
+													8=>"Fairly fine, showery later", 9=>"Showery early, improving", 10=>"Changeable, mending", 11=>"Fairly fine, showers likely", 
+													12=>"Rather unsettled clearing later", 13=>"Unsettled, probably improving", 14=>"Showery, bright intervals", 
+													15=>"Showery, becoming less settled", 16=>"Changeable, some rain", 17=>"Unsettled, short fine intervals", 18=>"Unsettled, rain later", 
+													19=>"Unsettled, some rain", 20=>"Mostly very unsettled", 21=>"Occasional rain, worsening", 22=>"Rain at times, very unsettled", 
+													23=>"Rain at frequent intervals", 24=>"Rain, very unsettled", 25=>"Stormy, may improve", 26=>"Stormy, much rain"</td>
+											</tr>
+											<tr>
+												<td>dev_forecast_text</td>
+												<td><code></code></td>
+												<td><code></code></td>
+												<td><code></code></td>
+												<td>Readable weather forecast based on Zambretti algorythm</td>
+											</tr>											
+											<tr>
+												<td>date_readable</td>
+												<td><code>string</code></td>
+												<td><code>dd.mm.yyyy hh:mm:ss</code></td>
+												<td><code></code></td>
+												<td>Better readable time format of last reading</td>
+											</tr>
+											<tr>
+												<td>dev_battery_level</td>
+												<td><code>int</code></td>
+												<td><code>54</code></td>
+												<td><code>LORA only</code></td>
+												<td>Estimated battery level in %</td>
+											</tr>
+											<tr>
+												<td>dev_online</td>
+												<td><code>bool</code></td>
+												<td><code>true</code></td>
+												<td><code></code></td>
+												<td>true if last received date is not older than 30 minutes</td>
+											</tr>
+											<tr>
+												<td>dev_dewpoint</td>
+												<td><code>float</code></td>
+												<td><code>4.2</code></td>
+												<td><code></code></td>
+												<td>Calculated dew point, if station has temperature and humidity sensor</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<!-- END TABLE HOVER -->
+						</div>
+						<div class="col-md-5">
+							<!-- TABLE HOVER -->
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">Response</h3>
+								</div>
+								<div class="panel-body">
+								<pre>{
+    "id": 2002,
+    "dev_id": "eui-ffffd57ed005ffff",
+    "alias": "Station 2",
+    "description": "Station with some sensors",
+    "latitude": null,
+    "longitude": null,
+    "altitude": null,
+    "status": {
+        "ok": true,
+        "beta": false,
+        "maintenence": true,
+        "invisible": false,
+        "dashboardignore": false
+    },
+    "last_update": {
+        "date": "2024-08-12 07:42:11.000000",
+        "timezone_type": 3,
+        "timezone": "UTC"
+    },
+    "datetime": {
+        "date": "2024-08-12 07:41:11.000000",
+        "timezone_type": 3,
+        "timezone": "UTC"
+    },
+    "app_id": "weatherdata-lora",
+    "ttn_time": "2024-08-12-07-41-11Z",
+    "gtw_id": "flowerstreet",
+    "gtw_rssi": 70,
+    "gtw_snr": 6,
+    "data_temperature": 22,
+    "data_humidity": 66,
+    "data_pressure": 841,
+    "data_battery": 4,
+    "data_wind": null,
+    "data_winddir": null,
+    "data_brightness": null,
+    "data_radiation": null,
+    "data_rain": null,
+    "data_uv": null
+}
+}</pre>
+								</div>
+							</div>
+							<!-- END TABLE HOVER -->
+						</div>
+					</div>
+				</div>
+			</div>
+						<!-- END MAIN CONTENT -->
+		</div>
+		<!-- END MAIN -->
+
+		<div class="main-content">
+				<div class="container-fluid">
+					<h3 class="page-title">Station Graph CSV Export</h3>
+					<p>The data from the graph page of a station can be exported as CSV file.</p>
+				<p>The data can be downloaded by URL, <code><?php echo URL; ?>export.php?station=eui-70b3d57ed0054c1f&scale=8</code> where the station ID should match your desired station and <code>scale</code> indicates the time in hours for the exported data.</p>
+				<p>Only the mostly used readings are exported! If a station does not have a specific sensor, the CSV cell will be empty.</p>
+				<div class="row">
+						<div class="col-md-7">
+							<!-- TABLE HOVER -->
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">CSV File</h3>
+								</div>
+								<div class="panel-body">
+									<table class="table table-hover">
+										<thead>
+											<tr>
+												<th>Column 1</th>
+												<th>Column 2</th>
+												<th>Column 3</th>
+												<th>Column 4</th>
+												<th>Column 5</th>
+											</tr>
+										</thead>
+										<tbody>
+										<tr>
+												<td><code>Time of reading in dd.mm.yy HH:mm:ss</code></td>
+												<td><code>Temperature in °C</code></td>
+												<td><code>Humidity in %</code></td>
+												<td><code>Air pressure in hPa</code></td>
+												<td><code>Battery voltage</code></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<!-- END TABLE HOVER -->
+						</div>
+						<div class="col-md-5">
+							<!-- TABLE HOVER -->
+							<div class="panel">
+								<div class="panel-heading">
+									<h3 class="panel-title">Response</h3>
+								</div>
+								<div class="panel-body">
+								<pre>
+"10.12.23 20:36:39";3.15;94;954.02;4.028
+"10.12.23 20:26:36";3.13;95;954.05;4.028
+"10.12.23 20:21:34";3.11;95;953.97;4.028
+"10.12.23 20:16:32";3.08;95;953.78;4.028
+								</pre>
+								</div>
+							</div>
+							<!-- END TABLE HOVER -->
+						</div>
+					</div>
+				</div>
+			</div>
+						<!-- END MAIN CONTENT -->
+		</div>
+		<!-- END MAIN -->
+
+
+</div>
+
+
+{% endblock %}

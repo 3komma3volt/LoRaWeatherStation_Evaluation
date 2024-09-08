@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	{% if not allStationData %}
+		<div class="container mt-5">
+
+			<div class="alert alert-danger" role="alert">
+				No comparison data available!
+			</div>
+			<a class="btn btn-secondary" href="{{ path('app_stations') }}">Back</a>
+		</div>
+	{% else %}
+		<div class="container">
+			<div class="text-center mt-5 mb-3">
+				<h1>Station Compare</h1>
+			</div>
+			<form method="post" action="{{ path('app_compare_stations') }}">
+				{% for station in allStationData %}
+
+					<input type="hidden" name="stations[]" value="{{ station.dev_id }}">
+				{% endfor %}
+				<table class="table table-hover border table-fit">
+					<tbody></tbody>
+					<thead>
+
+						<tr>
+							<th></th>
+							<th>Graph</th>
+							{% for station in allStationData %}
+								<th scope="col" class="h5">
+									<a class="link-underline link-underline-opacity-0" href="{{ path('app_station_detail', {id: station.dev_id }) }}">{{ station.alias }}</a>
+								</th>
+							{% endfor %}
+						</tr>
+					</thead>
+
+					{% for key, value in transposedData %}
+
+						{% set compareableItems = 0 %}
+						{% set allNull = true %}
+						{% for item in value %}
+
+							{% if item %}
+								{% set compareableItems = compareableItems + 1 %}
+							{% endif %}
+						{% endfor %}
+
+						{% if key in compareableData and compareableItems >= 2 %}
+
+							<tr>
+								<td class="h5">
+									<i class="{{ measurementIcons[key] }} ms-2 me-2"></i>
+									{{ measurementNames[key] }}</td>
+								{% if value is defined and value is not null and compareableItems >=2 %}
+									<td>
+										<button class="btn btn-outline-secondary bi bi-graph-up btn-sm" type="submit" name="parameter" value="' . $key . '"></button>
+									</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+
+								{% for val in value %}
+									{% if val is defined and val is not null %}
+										<td class="h5">{{ val }}{{ measurementUnits[key] }}</td>
+									{% else %}
+										<td class="h5">-</td>
+									{% endif %}
+								{% endfor %}
+
+
+							{% endif %}
+
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</form>
+			<a class="btn btn-secondary" href="{{ path('app_stations' ) }}">Back</a>
+
+		{% endif %}
+	{% endblock %}

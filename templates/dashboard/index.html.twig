@@ -1,0 +1,81 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="container">
+  <div class="text-center mt-5">
+    <h1>Ilmweather Median</h1>
+  </div>
+  <table class="table table-hover table-responsive-sm">
+  <tbody>
+      {% if weatherData.avg_data_temperature is defined and weatherData.avg_data_temperature is not null %}
+    <tr>
+      <th scope="row" class="h5">Temperature</th>
+      <th class="text-center"><i class="wi wi-thermometer"></i></th>
+      <td class="h5">{{weatherData.avg_data_temperature | round(1)}}°C</td>
+    </tr>
+    {% endif %}
+     {% if weatherData.avg_data_humidity is defined and weatherData.avg_data_humidity is not null %}
+    <tr>
+      <th scope="row" class="h5">Humidity</th>
+      <th class="text-center"><i class="wi wi-humidity"></i></th>
+      <td class="h5">{{weatherData.avg_data_humidity | round(0)}}%</td>
+    </tr>
+     {% endif %}
+    {% if weatherData.avg_data_pressure is defined and weatherData.avg_data_pressure is not null %}
+    <tr>
+      <th scope="row" class="h5">Pressure</th>
+      <th class="text-center"><i class="wi wi-barometer"></i></th>
+      <td class="h5">{{weatherData.avg_data_pressure | round(0)}}hPa</td>
+    </tr>
+    {% endif %}
+    {% if weatherData.avg_data_wind is defined and weatherData.avg_data_wind is not null %}
+    <tr>
+      <th scope="row" class="h5">Wind</th>
+      <th class="text-center"><i class="wi wi-strong-wind"></i></th>
+      <td class="h5">{{weatherData.avg_data_wind | round(1)}}m/s</td>
+    </tr>
+     {% endif %}
+     {% if weatherData.avg_data_brightness is defined and weatherData.avg_data_brightness is not null %}
+    <tr>
+      <th scope="row" class="h5">Brightness</th>
+      <th class="text-center"><i class="wi wi-sunset"></i></th>
+      <td class="h5">{{weatherData.avg_data_brightness | round(0)}}lx</td>
+    </tr>
+     {% endif %}
+     {% if dewpoint is defined and dewpoint is not null %}
+    <tr>
+      <th scope="row" class="h5">Dew Point</th>
+      <th class="text-center"><i class="wi wi-raindrops"></i></th>
+      <td class="h5">°C</td>
+    </tr>
+  {% endif %}
+  {% if avg_data_rain is defined and avg_data_rain is not null %}
+     <tr>
+      <th scope="row" class="h5">Rain</th>
+      <th class="text-center"><i class="bi bi-cloud-hail"></i></th>
+      <td class="h5">{{weatherData.avg_data_rain | round(2)}}ml/h</td>
+    </tr>
+  {% endif %}
+    <tr>
+      <th scope="row" class="h5">Sunrise</th>
+      <th class="text-center"><i class="wi wi-sunrise"></i></th>
+      <td class="h5">{{ sunInfo.sunrise}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="h5">Sunset</th>
+      <th class="text-center"><i class="wi wi-sunset"></i></th>
+      <td class="h5">{{ sunInfo.sunset}}</td>
+    </tr>
+    <tr>
+      <th scope="row" class="h5">Moon</th>
+      <th class="text-center"><i class="wi {{ moonData.phase_icon }}"></i></th>
+      <td class="h5">{{ moonData.phase }}</td>
+    </tr>
+  </tbody>
+</table>
+<a class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href ="{{path('app_dashboard_json')}}">View JSON</a>
+
+  </div>
+</div>
+{% endblock %}
