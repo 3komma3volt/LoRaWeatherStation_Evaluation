@@ -55,6 +55,6 @@ Shows a list of selected stations and all weather data. If at least two stations
   After deploying the app, go to the TheThingsStack control panel and select the weather app.
   Add a Webhook (Integrations -> Webhooks) for the application and use the URL of your server (Base URL) and select Uplink message as enabled event type:
   
-![Uplink](assets/documentation/uplink.png.png)
+![Uplink](assets/documentation/uplink.png)
 
 From now on, the Webhook will send the station data JSON encoded to the Evaluation Tool and it will store the data into the MariaDB database.
