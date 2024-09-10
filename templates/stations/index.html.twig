@@ -16,9 +16,9 @@
     
 						<tr>
 							<td class="align-middle" width="1%">
-								<input class="form-check-input" type="checkbox" value="{{ station.devid }}" {{compareEnabled}} name="stations[]" id="stations"></td>
-							<td onclick="window.location='{{ path('app_station_detail', {id: station.devid }) }}'" class="align-middle w-auto">
-								<h5 class="mb-1">{{ station.alias }}</h5>
+								<input class="form-check-input" type="checkbox" value="{{ station.devid }}" {{compareEnabled}} name="stations[]"></td>
+							<td class="align-middle w-auto">
+								<h5 class="mb-1"><a href = "{{ path('app_station_detail', {id: station.devid }) }}" class="link-offset-2 link-underline link-light link-underline-opacity-0">{{ station.alias }}</a></h5>
 								{{ station.lastUpdate | date("d.m.Y H:i:s") }}
 							</td>
 							<td class="align-middle text-end">

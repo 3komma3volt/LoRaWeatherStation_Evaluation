@@ -4076,16 +4076,16 @@
         },
         {
             "name": "symfony/ux-chartjs",
-            "version": "v2.19.0",
+            "version": "v2.19.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-chartjs.git",
-                "reference": "c4067a85b8ea370473147c74f78aaccc6bdf8213"
+                "reference": "a16c8272e8e9d362c0f3b4d70742747e26d66147"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-chartjs/zipball/c4067a85b8ea370473147c74f78aaccc6bdf8213",
-                "reference": "c4067a85b8ea370473147c74f78aaccc6bdf8213",
+                "url": "https://api.github.com/repos/symfony/ux-chartjs/zipball/a16c8272e8e9d362c0f3b4d70742747e26d66147",
+                "reference": "a16c8272e8e9d362c0f3b4d70742747e26d66147",
                 "shasum": ""
             },
             "require": {
@@ -4136,7 +4136,7 @@
                 "symfony-ux"
             ],
             "support": {
-                "source": "https://github.com/symfony/ux-chartjs/tree/v2.19.0"
+                "source": "https://github.com/symfony/ux-chartjs/tree/v2.19.3"
             },
             "funding": [
                 {
@@ -4152,7 +4152,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-30T19:26:23+00:00"
+            "time": "2024-08-14T04:55:38+00:00"
         },
         {
             "name": "symfony/ux-icons",

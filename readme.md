@@ -28,6 +28,8 @@ Lists all available stations. Shows a stations as offline, if the last received 
 
 Shows all weather data of a selected station. Since every station can have different sensors, the shown data differs between the stations. A detail view shows a bit more information like signal strength, battery voltage.. The station data can be read as JSON and used e.g. in a home automation.
 
+> Some calculations are not implemented yet in the Symfony version e.g. weather prediction, pressure at sealevel
+
 ![Station details](assets/documentation/details.png)
  
 ### History Graph
@@ -37,8 +39,6 @@ Shows all weather data of a selected station. Since every station can have diffe
  Shows all station data as graph for a selected timespan. The history data can be exported as CSV. 
 
 ### Compare
-
-> Compare is yet not implemented in the Symfony version
 
 ![Compare](assets/documentation/compare.png)
 

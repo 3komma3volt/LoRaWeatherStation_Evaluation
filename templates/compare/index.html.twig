@@ -19,11 +19,11 @@
 				{% for station in allStationData %}
 
 					<input type="hidden" name="stations[]" value="{{ station.dev_id }}">
+					<input type="hidden" name="stationNames[]" value="{{ station.alias }}">
 				{% endfor %}
 				<table class="table table-hover border table-fit">
 					<tbody></tbody>
 					<thead>
-
 						<tr>
 							<th></th>
 							<th>Graph</th>
@@ -34,27 +34,22 @@
 							{% endfor %}
 						</tr>
 					</thead>
-
 					{% for key, value in transposedData %}
-
 						{% set compareableItems = 0 %}
 						{% set allNull = true %}
 						{% for item in value %}
-
 							{% if item %}
 								{% set compareableItems = compareableItems + 1 %}
 							{% endif %}
 						{% endfor %}
-
 						{% if key in compareableData and compareableItems >= 2 %}
-
 							<tr>
 								<td class="h5">
 									<i class="{{ measurementIcons[key] }} ms-2 me-2"></i>
 									{{ measurementNames[key] }}</td>
 								{% if value is defined and value is not null and compareableItems >=2 %}
 									<td>
-										<button class="btn btn-outline-secondary bi bi-graph-up btn-sm" type="submit" name="parameter" value="' . $key . '"></button>
+										<button class="btn btn-outline-secondary bi bi-graph-up btn-sm" type="submit" name="parameter" value="{{ key }}"></button>
 									</td>
 								{% else %}
 									<td></td>
@@ -67,12 +62,8 @@
 										<td class="h5">-</td>
 									{% endif %}
 								{% endfor %}
-
-
 							{% endif %}
-
 						{% endfor %}
-
 					</tbody>
 				</table>
 			</form>

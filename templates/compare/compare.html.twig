@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="text-center mt-5  mb-3">
+			<h1>{{ stations|join(' : ') }}
+				History</h1>
+		</div>
+		<div class="text-center">
+			<form method="post">
+				<input type="hidden" name="parameter" value="{{ parameter }}">
+				{% for id in station_ids %}
+					<input type="hidden" name="stations[]" value="{{ id }}">
+				{% endfor %}
+				{% for stat in stations %}
+					<input type="hidden" name="stationNames[]" value="{{ stat }}">
+				{% endfor %}
+				<div class="btn-group">
+					{% embed 'compare/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 4, currentTimespan: timespan } %}
+						{% block text %}4h{% endblock %}
+					{% endembed %}
+					{% embed 'compare/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 8, currentTimespan: timespan } %}
+						{% block text %}8h{% endblock %}
+					{% endembed %}
+
+					{% embed 'compare/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 12, currentTimespan: timespan } %}
+						{% block text %}12h{% endblock %}
+					{% endembed %}
+
+					{% embed 'compare/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 24, currentTimespan: timespan } %}
+						{% block text %}24h{% endblock %}
+					{% endembed %}
+
+					{% embed 'compare/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 48, currentTimespan: timespan } %}
+						{% block text %}48h{% endblock %}
+					{% endembed %}
+				</div>
+			</form>
+		</div>
+
+		<div class="text-center mt-5">
+			<h3>{{ parameter_name }}</h3>
+		</div>
+
+		{{ render_chart(chart) }}
+		<form method="post" action="{{ path('app_compare') }}">
+			{% for id in station_ids %}
+				<input type="hidden" name="stations[]" value="{{ id }}">
+			{% endfor %}
+			<button type="submit" class="btn btn-secondary mt-2">Back</button>
+		</form>
+	</div>
+{% endblock %}
