@@ -170,36 +170,11 @@ class UiService
      * @return bool          True if the array contains only null values, false otherwise.
      */
 
-    private static function containsOnlyNull($input)
+    public static function containsOnlyNull($input)
     {
       return empty(array_filter($input, function ($a) {
         return $a !== null;
       }));
-    }
-
-    /**
-    * Prepares raw data for use in chart.js
-    *
-    * @param array $rawData   The raw input data to be processed.
-    *
-    * @return array Data for usage in chart.js
-    */
-    public function graphUiPrepare(array $rawData): array {
-
-        $uiData = array();
-        foreach ($rawData as $dataName => $rd) {    
-            if ($this->containsOnlyNull($rd)) {
-                $uiData[$dataName] = null;
-            }
-            elseif (is_a($rd[0], 'DateTime')) {
-                $uiData[$dataName] = $rd;
-            }
-            else {
-                $uiData[$dataName] = implode(', ', $rd);
-            }
-        }
-        return $uiData;
-
     }
 
 

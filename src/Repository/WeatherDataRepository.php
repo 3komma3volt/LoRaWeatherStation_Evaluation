@@ -191,7 +191,7 @@ class WeatherDataRepository extends ServiceEntityRepository
                 $data_array['datetime_readable'][] = $ra['datetime']->format('d.m H:i');
             }
             else {
-              $data_array['datetime_readable'][] = "'" . $ra['datetime']->format('d.m H:i') . "'";  
+              $data_array['datetime_readable'][] = $ra['datetime']->format('d.m H:i');  
             }
             
             $data_array['data_temperature'][] = $ra['data_temperature'];

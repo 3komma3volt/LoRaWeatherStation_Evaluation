@@ -3,59 +3,69 @@
 
 {% block body %}
 
- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
- <script>
-import Chart from 'chart.js/auto';
-</script>
-	<div class="container"> <div class="text-center mt-5  mb-3">
+<div class="container">
+	<div class="text-center mt-5  mb-3">
 		<h1>{{ stationData.alias }}
 			History</h1>
 	</div>
-<div class="text-center">
-    <div class="btn-group">
+	<div class="text-center">
+		<div class="btn-group">
 
-        {% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 4, currentTimespan: timespan } %}
-            {% block text %}4h{% endblock %}
-            {% block path %}{{ path('app_graph', {id: stationData.dev_id, timespan: 4} ) }}{% endblock %}
-        {% endembed %}
+			{% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 4, currentTimespan: timespan } %}
+				{% block text %}4h
+				{% endblock %}
+				{% block path %}
+					{{ path('app_graph', {id: stationData.dev_id, timespan: 4} ) }}
+				{% endblock %}
+			{% endembed %}
 
-        {% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 8, currentTimespan: timespan } %}
-            {% block text %}8h{% endblock %}
-            {% block path %}{{ path('app_graph', {id: stationData.dev_id, timespan: 8} ) }}{% endblock %}
-        {% endembed %}
+			{% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 8, currentTimespan: timespan } %}
+				{% block text %}8h
+				{% endblock %}
+				{% block path %}
+					{{ path('app_graph', {id: stationData.dev_id, timespan: 8} ) }}
+				{% endblock %}
+			{% endembed %}
 
-        {% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 12, currentTimespan: timespan } %}
-            {% block text %}12h{% endblock %}
-            {% block path %}{{ path('app_graph', {id: stationData.dev_id, timespan: 12} ) }}{% endblock %}
-        {% endembed %}
+			{% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 12, currentTimespan: timespan } %}
+				{% block text %}12h
+				{% endblock %}
+				{% block path %}
+					{{ path('app_graph', {id: stationData.dev_id, timespan: 12} ) }}
+				{% endblock %}
+			{% endembed %}
 
-        {% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 24, currentTimespan: timespan } %}
-            {% block text %}24h{% endblock %}
-            {% block path %}{{ path('app_graph', {id: stationData.dev_id, timespan: 24} ) }}{% endblock %}
-        {% endembed %}
+			{% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 24, currentTimespan: timespan } %}
+				{% block text %}24h
+				{% endblock %}
+				{% block path %}
+					{{ path('app_graph', {id: stationData.dev_id, timespan: 24} ) }}
+				{% endblock %}
+			{% endembed %}
 
-        {% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 48, currentTimespan: timespan } %}
-            {% block text %}48h{% endblock %}
-            {% block path %}{{ path('app_graph', {id: stationData.dev_id, timespan: 48} ) }}{% endblock %}
-        {% endembed %}
+			{% embed 'graph/_timespanSelect.html.twig' with { route: 'app_graph', timespan: 48, currentTimespan: timespan } %}
+				{% block text %}48h
+				{% endblock %}
+				{% block path %}
+					{{ path('app_graph', {id: stationData.dev_id, timespan: 48} ) }}
+				{% endblock %}
+			{% endembed %}
 
-    </div>
-</div>
-	{% if not weatherHistoryData %}
+		</div>
+	</div>
+	{% if not dataCharts %}
 		<div class="alert alert-warning mt-3" role="alert">
 			No data for this station found
 		</div>
-
 	{% else %}
 
-		{% for key, value in graphData %}
-			{% if key in isMeasurement and value is not null %}
-				<div class="text-center mt-5">
-					<h3>{{measurementNames[key]}}</h3>
-				</div>
-				{{ include('graph/_graphTemplate.html.twig', {chartName: measurementNames[key], xAxis: graphData['datetime_readable'], yAxis: value, chartUnit: measurementUnits[key]}) }}
-			{% endif %}
+		{% for key, value in dataCharts %}
+			<div class="text-center mt-5">
+				<h3>{{key}}</h3>
+			</div>
+			<div>
+				{{ render_chart(value) }}
+			</div>
 		{% endfor %}
 
 
@@ -74,16 +84,14 @@ import Chart from 'chart.js/auto';
 						<table class="table table-hover table-responsive-sm">
 							<tbody>
 
-								{% for key, value in graphData %}
-									{% if key in detailedAttributes and value is not null %}
-										<div class="text-center mt-5">
-											<h3>{{measurementNames[key]}}</h3>
-										</div>
-										{{ include('graph/_graphTemplate.html.twig', {chartName: measurementNames[key], xAxis: graphData['datetime_readable'], yAxis: value, chartUnit: measurementUnits[key]}) }}
-									{% endif %}
+								{% for key, value in detailedCharts %}
+									<div class="text-center mt-5">
+										<h3>{{key}}</h3>
+									</div>
+									<div>
+										{{ render_chart(value) }}
+									</div>
 								{% endfor %}
-
-
 							</tbody>
 						</table>
 

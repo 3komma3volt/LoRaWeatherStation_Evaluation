@@ -8,48 +8,96 @@ use Symfony\Component\Filesystem\Filesystem;
 use App\Repository\WeatherStationsRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\UX\Chartjs\Model\Chart;
+
 
 class GraphController extends AbstractController
 {
     #[Route('/graph/{id}/{timespan}', name: 'app_graph', defaults: ['timespan' => 8])]
     public function index(
-        $id, $timespan,
+        $id,
+        $timespan,
         WeatherDataRepository $weatherData,
         WeatherStationsRepository $stations,
-        ): Response
-    {
-        $ui = new UiService();
+        ChartBuilderInterface $chartBuilder
+    ): Response {
+
         $stationDetails = $stations->getStationsDetails(false, $id);
         $weather = $weatherData->getWeatherData($id, $timespan);
 
+        $datetimeArray = $weather['datetime_readable'];
 
-        $graphData = $ui->graphUiPrepare($weather);
+        $dataCharts = array();
+        $detailedCharts = array();
 
-        //dd($weather);
+        foreach ($weather as $key => $value) {
+            if (UiService::containsOnlyNull($value)) {
+                continue;
+            }
+            if(!in_array($key, UiService::getIsMeasurement()) && !in_array($key, UiService::getIsDetailledAttribute())) {
+                continue;
+            }
+            $measurementChart = $chartBuilder->createChart(Chart::TYPE_LINE);
+            $measurementChart->setData([
+                'labels' => $datetimeArray,
+                'datasets' => [
+                    [
+                        'label' => UiService::getMeasurementNames()[$key],
+                        'data' => $value,
+                        'borderWidth' => 1
+                    ],
+                ],
+            ]);
+            $measurementChart->setOptions([
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'plugins' => [
+                    'legend' => [
+                        'display' => false,
+                    ],
+                ],
+
+                'scales' => [
+                    'y' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => UiService::getMeasurementNames()[$key] . "/" . UiService::getMeasurementUnits()[$key], // Dynamically set y-axis label using $params
+                        ],
+                        'beginAtZero' => false,
+                    ],
+                ],
+            ]);
+            if (in_array($key, UiService::IS_MEASUREMENT)) {
+               
+                $dataCharts[UiService::getMeasurementNames()[$key]] = $measurementChart;
+            }
+            else if (in_array($key, UiService::IS_DETAILLED_ATTRIBUTE)) {
+            
+                $detailedCharts[UiService::getMeasurementNames()[$key]] = $measurementChart;
+            }
+        }
+
         return $this->render('graph/index.html.twig', [
             'stationData' => $stationDetails,
-            'weatherHistoryData' => $weather,
-            'graphData' => $graphData,
-            'isMeasurement' => UiService::getIsMeasurement(),
-            'measurementNames' => UiService::getMeasurementNames(),
-            'measurementUnits' => UiService::getMeasurementUnits(),
-            'detailedAttributes' => UiService::getIsDetailledAttribute(),
-            'timespan' => $timespan
+            'timespan' => $timespan,
+            'dataCharts' => $dataCharts,
+            'detailedCharts' => $detailedCharts
         ]);
     }
 
     #[Route('/graph/{id}/{timespan}/export', name: 'app_graph_export', defaults: ['timespan' => 8])]
     public function export(
-        $id, $timespan,
+        $id,
+        $timespan,
         WeatherDataRepository $weatherData,
-        ): BinaryFileResponse
-    {
+    ): BinaryFileResponse {
 
         $weather = $weatherData->getWeatherData($id, $timespan, true);
 
-        $filename = "data_export_" .$id . "_" . date("d-m-Y") . ".csv";
+        $filename = "data_export_" . $id . "_" . date("d-m-Y") . ".csv";
 
         $tmpFileName = (new Filesystem())->tempnam(sys_get_temp_dir(), 'sb_');
         $tmpFile = fopen($tmpFileName, 'wb+');
@@ -59,15 +107,12 @@ class GraphController extends AbstractController
         foreach ($weather as $line) {
             if (is_a($line[0], 'DateTime')) continue;
             if ($line[0] == null) continue;
-          fputcsv($tmpFile, $line, ",");
+            fputcsv($tmpFile, $line, ",");
         }
         fclose($tmpFile);
         $response = $this->file($tmpFileName, $filename);
         $response->headers->set('Content-type', 'application/csv');
 
-       
-
         return $response;
-
     }
 }

@@ -51,6 +51,13 @@ class AppFixtures extends Fixture
 
         $weatherStation5->setStatus(['ok' => true, 'beta' => true, 'maintenence' => false, 'invisible' => false, 'dashboardignore' => true]);
 
+        $weatherStation6 = new WeatherStations();
+        $weatherStation6->setDevId('eui-ffffd57ed-nobatt');
+        $weatherStation6->setAlias('Station 6 No battery');
+
+        $weatherStation6->setStatus(['ok' => true, 'beta' => false, 'maintenence' => false, 'invisible' => false, 'dashboardignore' => false]);
+
+
 
 
 
@@ -155,7 +162,26 @@ class AppFixtures extends Fixture
             $weatherData5->setDataUv(0);
             $manager->persist(($weatherData5));
             $weatherStation5->setLastUpdate(clone $dt);
+
+
+            $weatherData6 = new WeatherData;
+            $weatherData6->setDevId('eui-ffffd57ed-nobatt');
+            $weatherData6->setDatetime(clone $dt);
+            $weatherData6->setAppId('weatherdata-web');
+            $weatherData6->setDataTemperature(rand(15, 25));
+            $weatherData6->setDataHumidity(rand(50, 100));
+            $weatherData6->setDataPressure(rand(800, 1100));
+            $weatherData6->setDataWind(rand(0, 100) / 10);
+            $weatherData6->setDataWinddir(0);
+            $weatherData6->setDataBrightness(rand(0, 10000));
+            $weatherData6->setDataRadiation(0);
+            $weatherData6->setDataRain(rand(0, 5));
+            $weatherData6->setDataUv(0);
+            $manager->persist(($weatherData6));
+            $weatherStation6->setLastUpdate(clone $dt);
+
         }
+        $manager->persist(($weatherStation6));
         $manager->persist(($weatherStation5));
         $manager->persist(($weatherStation4));
         $manager->persist(($weatherStation3));
