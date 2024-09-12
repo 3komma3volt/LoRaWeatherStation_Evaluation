@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\DewPoint;
+namespace App\Service;
 
 class DewPoint {
 /********************************************************************

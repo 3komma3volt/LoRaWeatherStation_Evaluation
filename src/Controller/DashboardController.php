@@ -62,7 +62,7 @@ class DashboardController extends AbstractController
     $moonData = $moonPhase->calcMoonPhase();
 
     $timestamp = strtotime('today');
-    $sunInfoRaw = date_sun_info($timestamp, 50.68, 10.91);
+    $sunInfoRaw = date_sun_info($timestamp, $this->getParameter('system_latitude'), $this->getParameter('system_longitude'));
 
     $sunInfo = array_map(function ($val) {
       return date("H:i:s", $val);

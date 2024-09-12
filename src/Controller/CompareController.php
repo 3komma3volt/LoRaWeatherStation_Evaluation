@@ -2,15 +2,18 @@
 
 namespace App\Controller;
 
-use App\Service\UiService\UiService;
+use DatePeriod;
+use DateInterval;
+use App\Service\UiService;
+use App\Entity\WeatherData;
+use Symfony\UX\Chartjs\Model\Chart;
 use App\Repository\WeatherDataRepository;
-use App\Repository\WeatherStationsRepository;
+use Doctrine\ORM\Query\Expr\Math;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CompareController extends AbstractController
 {
@@ -45,7 +48,7 @@ class CompareController extends AbstractController
         return $this->render('compare/index.html.twig', [
             'allStationData' => $allStationData,
             'transposedData' => $transposedData,
-            'compareableData' => UiService::IS_COMPAREABLE,
+            'compareableData' => UiService::getIsCompareable(),
             'measurementNames' => UiService::getMeasurementNames(),
             'measurementUnits' => UiService::getMeasurementUnits(),
             'measurementIcons' => UiService::getMeasurementIcon(),
@@ -56,7 +59,6 @@ class CompareController extends AbstractController
     public function compare(
         Request $request,
         WeatherDataRepository $weatherDataRepository,
-        WeatherStationsRepository $weatherStationRepository,
         ChartBuilderInterface $chartBuilder
     ): Response {
 
@@ -67,9 +69,11 @@ class CompareController extends AbstractController
 
         $weatherData = array();
         $weatherTimeStamp = array();
+        $timestamps = array();
 
-        $weatherTimeStampReadable = array();
-
+       // $weatherTimeStampReadable = array();
+       $allTimestampsReadables = array();
+        $maxMeasurements  = 0;
         foreach ($compareStations as $station) {
 
             $tmpWeatherData = $weatherDataRepository->getWeatherData($station, $compareTimespan);
@@ -77,11 +81,57 @@ class CompareController extends AbstractController
                 // Skip station
             } else {
                 $weatherData[] = $tmpWeatherData[$compareParameter];
+                if(count($tmpWeatherData[$compareParameter]) > $maxMeasurements) {
+                    $maxMeasurements = count($tmpWeatherData[$compareParameter]);
+                }
                 $weatherTimeStamp[] = $tmpWeatherData['datetime'];
+                $allTimestampsReadables[] = $tmpWeatherData['datetime_readable'];
                 $weatherTimeStampReadable = $tmpWeatherData['datetime_readable'];
-            }
-        }
 
+                $timestamps = array_merge($timestamps, $weatherTimeStampReadable);
+            }
+            
+        }     
+        $uniqueTimestamps = array_unique($timestamps);
+        sort($uniqueTimestamps);
+
+        $minTimestamp = min(array_merge(...$weatherTimeStamp));
+        $maxTimestamp = max(array_merge(...$weatherTimeStamp));
+        $interval = new DateInterval('PT'.$this->getParameter('system_transmission_time').'M');
+        $period = new DatePeriod($minTimestamp, $interval, $maxTimestamp);
+
+    
+
+       // dd($weatherData);
+        $newData = array();
+
+        foreach($weatherData as $index=>$value) {
+       
+        $cnt=0;
+        foreach($uniqueTimestamps as $ts) {
+           // print($index);
+            if(in_array($ts, $allTimestampsReadables[$index])) {
+
+                $newData[$index][] = $value[$cnt];
+                $cnt++;
+            }
+            else {
+                $newData[$index][] = -10;
+            }
+          
+        }
+    }
+
+        //foreach ($weatherData as $index =>$item) {
+        //    foreach($item as $wd) {
+        //        if($weatherTimeStampReadable[$index] == $uniqueTimestamps[$index]) {
+        //        $newData[$index][] = $wd; 
+        //        }
+//
+        //    }
+
+       // }
+      //  dd($newData);
         $datasets = array();
 
         foreach ($compareStationNames as $index => $stationName) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\UiService;
+namespace App\Service;
 
 class UiService
 {

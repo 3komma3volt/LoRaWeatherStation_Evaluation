@@ -70,8 +70,12 @@ class AppFixtures extends Fixture
         $interval = new DateInterval('PT5M');
         $period = new DatePeriod($startTime, $interval, $endTime);
 
+        $steps = 0;
         foreach ($period as $dt) {
+
             echo $dt->format("d.m.Y H:i:s") . "\n";
+
+            $station_1_2_temp = rand(15, 25);
 
             $weatherData = new WeatherData;
             $weatherData->setDevId('eui-70b3d57ed00538a3');
@@ -81,7 +85,7 @@ class AppFixtures extends Fixture
             $weatherData->setGtwId('flowerstreet');
             $weatherData->setGtwRssi(rand(60, 90));
             $weatherData->setGtwSnr(rand(50, 100) / 10);
-            $weatherData->setDataTemperature(rand(15, 25));
+            $weatherData->setDataTemperature($station_1_2_temp);
             $weatherData->setDataHumidity(rand(50, 100));
             $weatherData->setDataPressure(rand(800, 1100));
             $weatherData->setDataBattery(rand(35, 41) / 10);
@@ -94,21 +98,27 @@ class AppFixtures extends Fixture
             $manager->persist(($weatherData));
             $weatherStation1->setLastUpdate(clone $dt);
 
-            $weatherData2 = new WeatherData;
-            $weatherData2->setDevId('eui-ffffd57ed005ffff');
-            $weatherData2->setDatetime(clone $dt);
-            $weatherData2->setAppId('weatherdata-lora');
-            $weatherData2->setTtnTime($dt->format('Y-m-d-H-i-s') . 'Z');
-            $weatherData2->setGtwId('flowerstreet');
-            $weatherData2->setGtwRssi(rand(60, 90));
-            $weatherData2->setGtwSnr(rand(50, 100) / 10);
-            $weatherData2->setDataTemperature(rand(15, 25));
-            $weatherData2->setDataHumidity(rand(50, 100));
-            $weatherData2->setDataPressure(rand(800, 1100));
-            $weatherData2->setDataBattery(rand(35, 41) / 10);
-            $manager->persist(($weatherData2));
-            $weatherStation2->setLastUpdate(clone $dt);
+            if ($steps < 50) { // Simulate transmission loss
 
+                $stat2time = clone $dt;
+                $stat2time->modify('+1 minutes');
+                $weatherData2 = new WeatherData;
+                $weatherData2->setDevId('eui-ffffd57ed005ffff');
+                $weatherData2->setDatetime($stat2time);
+                $weatherData2->setAppId('weatherdata-lora');
+                $weatherData2->setTtnTime($dt->format('Y-m-d-H-i-s') . 'Z');
+                $weatherData2->setGtwId('flowerstreet');
+                $weatherData2->setGtwRssi(rand(60, 90));
+                $weatherData2->setGtwSnr(rand(50, 100) / 10);
+                $weatherData2->setDataTemperature($station_1_2_temp);
+                $weatherData2->setDataHumidity(rand(50, 100));
+                $weatherData2->setDataPressure(rand(800, 1100));
+                $weatherData2->setDataBattery(rand(35, 41) / 10);
+                $manager->persist(($weatherData2));
+                $weatherStation2->setLastUpdate(clone $dt);
+
+                $steps++;
+            }
             $weatherData3 = new WeatherData;
             $weatherData3->setDevId('eui-ffffd57ed005aaaa');
             $weatherData3->setDatetime(clone $dt);
@@ -179,7 +189,6 @@ class AppFixtures extends Fixture
             $weatherData6->setDataUv(0);
             $manager->persist(($weatherData6));
             $weatherStation6->setLastUpdate(clone $dt);
-
         }
         $manager->persist(($weatherStation6));
         $manager->persist(($weatherStation5));
