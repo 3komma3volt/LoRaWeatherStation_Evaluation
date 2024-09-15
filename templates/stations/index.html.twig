@@ -12,8 +12,8 @@
 				<tbody>
 
 					{% for station in weather_stations %}
-                    {% set compareEnabled = date(station.lastUpdate) < date('-30 minutes') ? 'disabled' : '' %}
-    
+              {#       {% set compareEnabled = date(station.lastUpdate) < date('-30 minutes') ? 'disabled' : '' %} #}
+    {% set compareEnabled = '' %}
 						<tr>
 							<td class="align-middle" width="1%">
 								<input class="form-check-input" type="checkbox" value="{{ station.devid }}" {{compareEnabled}} name="stations[]"></td>

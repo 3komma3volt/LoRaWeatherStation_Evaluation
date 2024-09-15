@@ -71,9 +71,6 @@ class CompareController extends AbstractController
         $weatherTimeStamp = array();
         $timestamps = array();
 
-       // $weatherTimeStampReadable = array();
-       $allTimestampsReadables = array();
-        $maxMeasurements  = 0;
         foreach ($compareStations as $station) {
 
             $tmpWeatherData = $weatherDataRepository->getWeatherData($station, $compareTimespan);
@@ -81,73 +78,39 @@ class CompareController extends AbstractController
                 // Skip station
             } else {
                 $weatherData[] = $tmpWeatherData[$compareParameter];
-                if(count($tmpWeatherData[$compareParameter]) > $maxMeasurements) {
-                    $maxMeasurements = count($tmpWeatherData[$compareParameter]);
-                }
-                $weatherTimeStamp[] = $tmpWeatherData['datetime'];
-                $allTimestampsReadables[] = $tmpWeatherData['datetime_readable'];
-                $weatherTimeStampReadable = $tmpWeatherData['datetime_readable'];
 
-                $timestamps = array_merge($timestamps, $weatherTimeStampReadable);
+                $weatherTimeStamp[] = $tmpWeatherData['datetime'];
+                $timestamps[] = $tmpWeatherData['datetime_readable'];
+
             }
             
         }     
-        $uniqueTimestamps = array_unique($timestamps);
-        sort($uniqueTimestamps);
 
-        $minTimestamp = min(array_merge(...$weatherTimeStamp));
-        $maxTimestamp = max(array_merge(...$weatherTimeStamp));
-        $interval = new DateInterval('PT'.$this->getParameter('system_transmission_time').'M');
-        $period = new DatePeriod($minTimestamp, $interval, $maxTimestamp);
-
-    
-
-       // dd($weatherData);
-        $newData = array();
-
-        foreach($weatherData as $index=>$value) {
-       
-        $cnt=0;
-        foreach($uniqueTimestamps as $ts) {
-           // print($index);
-            if(in_array($ts, $allTimestampsReadables[$index])) {
-
-                $newData[$index][] = $value[$cnt];
-                $cnt++;
-            }
-            else {
-                $newData[$index][] = -10;
-            }
-          
-        }
-    }
-
-        //foreach ($weatherData as $index =>$item) {
-        //    foreach($item as $wd) {
-        //        if($weatherTimeStampReadable[$index] == $uniqueTimestamps[$index]) {
-        //        $newData[$index][] = $wd; 
-        //        }
-//
-        //    }
-
-       // }
-      //  dd($newData);
         $datasets = array();
 
         foreach ($compareStationNames as $index => $stationName) {
+            $dataPoints = array();
+
+            foreach ($weatherTimeStamp[$index] as $i => $timestamp) {
+                $dataPoints[] = [
+                    'x' => $timestamp->getTimestamp() * 1000,
+                    'y' => $weatherData[$index][$i], 
+                ];
+            }
             $datasets[] = [
                 'label' => $stationName,
-                'data' => $weatherData[$index],
-                'borderWidth' => 1
+                'data' => $dataPoints,
+                'borderWidth' => 1,
+                'showLine' => true
+   
             ];
         }
 
-        $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
-
+        $chart = $chartBuilder->createChart(Chart::TYPE_SCATTER);
         $chart->setData([
-            'labels' => $weatherTimeStampReadable,
             'datasets' => $datasets,
         ]);
+
         $chart->setOptions([
             'plugins' => [
                 'legend' => [
@@ -162,6 +125,17 @@ class CompareController extends AbstractController
                         'text' => UiService::getMeasurementNames()[$compareParameter]  . "/" . UiService::getMeasurementUnits()[$compareParameter],
                     ],
                     'beginAtZero' => false,
+                ],
+                'x' => [
+                    'type' => 'time',
+                    'unit' => 'millisecond',
+                    'displayFormats' => [
+                        'minute' => 'HH:mm'
+                    ],
+                     'tooltipFormat' => 'HH:mm'
+                        
+                    
+                 
                 ],
             ],
         ]);
