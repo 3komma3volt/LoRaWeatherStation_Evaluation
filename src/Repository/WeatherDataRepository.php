@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Entity\WeatherData;
 use App\Entity\WeatherStations;
-use App\Service\DewPoint\DewPoint;
-use App\Service\UiService\UiService;
+use App\Service\DewPoint;
+use App\Service\UiService;
 use App\Service\WeatherCalculations;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +34,8 @@ class WeatherDataRepository extends ServiceEntityRepository
 
     public function __construct(
         ManagerRegistry $registry,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+
     ) {
         parent::__construct($registry, WeatherData::class);
         $this->entityManager = $entityManager;
@@ -97,7 +98,7 @@ class WeatherDataRepository extends ServiceEntityRepository
 
     public function getStationWeatherData(string $devId)
     {
-        // todo: change entities and add manytoone relation
+        // todo: change entities and add many-to-one relation
         $qb = $this->createQueryBuilder('wd')
         ->select(
             'wd.id, wd.datetime, wd.app_id, wd.dev_id, wd.ttn_time, wd.gtw_id, wd.gtw_rssi, wd.gtw_snr, wd.data_temperature, wd.data_humidity, wd.data_pressure, wd.data_battery, wd.data_wind, wd.data_winddir, wd.data_brightness, wd.data_radiation, wd.data_rain, wd.data_uv',
@@ -109,9 +110,14 @@ class WeatherDataRepository extends ServiceEntityRepository
         ->setMaxResults(1);
         $result = $qb->getQuery()->getArrayResult()[0];
 
+        if(!$result) {
+            return null;
+        }
+
         if ($result['data_temperature'] && $result['data_humidity']) {
             $dp = new DewPoint();
-            $dewPoint = $dp->dewPoint($result['data_humidity'], $result['data_temperature']);
+
+            $dewPoint = $dp->dewpoint($result['data_humidity'], $result['data_temperature']);
             $result['data_dewpoint'] = $dewPoint;
         }
         if ($result['data_battery']) {
@@ -169,7 +175,7 @@ class WeatherDataRepository extends ServiceEntityRepository
         return array_column($results, 'data_rain');
     }
 
-    public function getWeatherData(string $devId, int $timeSpan, bool $export = false): array
+    public function getWeatherData(string $devId, int $timeSpan): array
     {
         $latestEntry = $this->getLastTime($devId);
         $startTime = (clone $latestEntry)->modify("-{$timeSpan} hour");
@@ -187,13 +193,8 @@ class WeatherDataRepository extends ServiceEntityRepository
         $data_array = array();
         foreach ($resultArray as $ra) {
             $data_array['datetime'][] = $ra['datetime'];
-            if($export) {
-                $data_array['datetime_readable'][] = $ra['datetime']->format('d.m H:i');
-            }
-            else {
-              $data_array['datetime_readable'][] = $ra['datetime']->format('d.m H:i');  
-            }
-            
+            $data_array['datetime_readable'][] = $ra['datetime']->format('d.m H:i');        
+
             $data_array['data_temperature'][] = $ra['data_temperature'];
             $data_array['data_pressure'][] = $ra['data_pressure'];
             $data_array['data_battery'][] = $ra['data_battery'];

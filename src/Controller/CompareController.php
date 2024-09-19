@@ -2,15 +2,18 @@
 
 namespace App\Controller;
 
-use App\Service\UiService\UiService;
+use DatePeriod;
+use DateInterval;
+use App\Service\UiService;
+use App\Entity\WeatherData;
+use Symfony\UX\Chartjs\Model\Chart;
 use App\Repository\WeatherDataRepository;
-use App\Repository\WeatherStationsRepository;
+use Doctrine\ORM\Query\Expr\Math;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CompareController extends AbstractController
 {
@@ -45,7 +48,7 @@ class CompareController extends AbstractController
         return $this->render('compare/index.html.twig', [
             'allStationData' => $allStationData,
             'transposedData' => $transposedData,
-            'compareableData' => UiService::IS_COMPAREABLE,
+            'compareableData' => UiService::getIsCompareable(),
             'measurementNames' => UiService::getMeasurementNames(),
             'measurementUnits' => UiService::getMeasurementUnits(),
             'measurementIcons' => UiService::getMeasurementIcon(),
@@ -56,7 +59,6 @@ class CompareController extends AbstractController
     public function compare(
         Request $request,
         WeatherDataRepository $weatherDataRepository,
-        WeatherStationsRepository $weatherStationRepository,
         ChartBuilderInterface $chartBuilder
     ): Response {
 
@@ -67,8 +69,7 @@ class CompareController extends AbstractController
 
         $weatherData = array();
         $weatherTimeStamp = array();
-
-        $weatherTimeStampReadable = array();
+       // $timestamps = array();
 
         foreach ($compareStations as $station) {
 
@@ -77,27 +78,39 @@ class CompareController extends AbstractController
                 // Skip station
             } else {
                 $weatherData[] = $tmpWeatherData[$compareParameter];
-                $weatherTimeStamp[] = $tmpWeatherData['datetime'];
-                $weatherTimeStampReadable = $tmpWeatherData['datetime_readable'];
+
+                $weatherTimeStamp[] = ($tmpWeatherData['datetime']);
+               // $timestamps[] = $tmpWeatherData['datetime_readable'];
+
             }
-        }
+            
+        }     
 
         $datasets = array();
 
         foreach ($compareStationNames as $index => $stationName) {
+            $dataPoints = array();
+
+            foreach ($weatherTimeStamp[$index] as $i => $timestamp) {
+                $dataPoints[] = [
+                    'x' => $timestamp->getTimestamp() * 1000,
+                    'y' => $weatherData[$index][$i], 
+                ];
+            }
             $datasets[] = [
                 'label' => $stationName,
-                'data' => $weatherData[$index],
-                'borderWidth' => 1
+                'data' => $dataPoints,
+                'borderWidth' => 1,
+                'showLine' => true
+   
             ];
         }
 
-        $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
-
+        $chart = $chartBuilder->createChart(Chart::TYPE_SCATTER);
         $chart->setData([
-            'labels' => $weatherTimeStampReadable,
             'datasets' => $datasets,
         ]);
+
         $chart->setOptions([
             'plugins' => [
                 'legend' => [
@@ -112,6 +125,22 @@ class CompareController extends AbstractController
                         'text' => UiService::getMeasurementNames()[$compareParameter]  . "/" . UiService::getMeasurementUnits()[$compareParameter],
                     ],
                     'beginAtZero' => false,
+                ],
+                'x' => [
+                    'type' => 'time',
+           
+                    'time' => [
+                        'unit' => 'minute',  
+                        'displayFormats' => [
+                            'minute' => 'dd.MM HH:mm', 
+                        ],
+                        'tooltipFormat' => 'HH:mm', 
+                    ],
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Time',
+                    ],
+                 
                 ],
             ],
         ]);

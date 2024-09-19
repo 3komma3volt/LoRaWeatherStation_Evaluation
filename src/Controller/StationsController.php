@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Service\UiService\UiService;
+use App\Service\UiService;
 use App\Repository\WeatherDataRepository;
 use App\Repository\WeatherStationsRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class StationsController extends AbstractController
 {
@@ -35,7 +35,6 @@ class StationsController extends AbstractController
 
 
 //dd(UiService::getIsMeasurement());
-
 
         return $this->render('stations/station_details.html.twig', [
             'weatherData' => $weatherData,

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-use App\Service\UiService\UiService;
+
+use App\Service\UiService;
+use Symfony\UX\Chartjs\Model\Chart;
 use App\Repository\WeatherDataRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use App\Repository\WeatherStationsRepository;
@@ -11,7 +13,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\UX\Chartjs\Model\Chart;
 
 
 class GraphController extends AbstractController
@@ -22,7 +23,8 @@ class GraphController extends AbstractController
         $timespan,
         WeatherDataRepository $weatherData,
         WeatherStationsRepository $stations,
-        ChartBuilderInterface $chartBuilder
+        ChartBuilderInterface $chartBuilder,
+        UiService $uiservice
     ): Response {
 
         $stationDetails = $stations->getStationsDetails(false, $id);
@@ -34,7 +36,7 @@ class GraphController extends AbstractController
         $detailedCharts = array();
 
         foreach ($weather as $key => $value) {
-            if (UiService::containsOnlyNull($value)) {
+            if ($uiservice->containsOnlyNull($value)) {
                 continue;
             }
             if(!in_array($key, UiService::getIsMeasurement()) && !in_array($key, UiService::getIsDetailledAttribute())) {
@@ -95,7 +97,7 @@ class GraphController extends AbstractController
         WeatherDataRepository $weatherData,
     ): BinaryFileResponse {
 
-        $weather = $weatherData->getWeatherData($id, $timespan, true);
+        $weather = $weatherData->getWeatherData($id, $timespan);
 
         $filename = "data_export_" . $id . "_" . date("d-m-Y") . ".csv";
 
