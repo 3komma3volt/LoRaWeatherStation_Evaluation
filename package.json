@@ -32,6 +32,7 @@
     ],
     "dependencies": {
         "bootstrap-icons": "^1.11.3",
-        "weather-icons": "^2.0.12"
+        "chartjs-adapter-date-fns": "^3.0.0",
+        "date-fns": "^3.6.0"
     }
 }

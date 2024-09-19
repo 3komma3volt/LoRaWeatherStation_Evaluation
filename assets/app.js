@@ -4,7 +4,7 @@ import './styles/app.scss';
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
-
+import 'chartjs-adapter-date-fns';
 require('bootstrap');
 
 // or you can include specific pieces

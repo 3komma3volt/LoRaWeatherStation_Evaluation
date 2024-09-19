@@ -69,7 +69,7 @@ class CompareController extends AbstractController
 
         $weatherData = array();
         $weatherTimeStamp = array();
-        $timestamps = array();
+       // $timestamps = array();
 
         foreach ($compareStations as $station) {
 
@@ -79,8 +79,8 @@ class CompareController extends AbstractController
             } else {
                 $weatherData[] = $tmpWeatherData[$compareParameter];
 
-                $weatherTimeStamp[] = $tmpWeatherData['datetime'];
-                $timestamps[] = $tmpWeatherData['datetime_readable'];
+                $weatherTimeStamp[] = ($tmpWeatherData['datetime']);
+               // $timestamps[] = $tmpWeatherData['datetime_readable'];
 
             }
             
@@ -128,13 +128,18 @@ class CompareController extends AbstractController
                 ],
                 'x' => [
                     'type' => 'time',
-                    'unit' => 'millisecond',
-                    'displayFormats' => [
-                        'minute' => 'HH:mm'
+           
+                    'time' => [
+                        'unit' => 'minute',  
+                        'displayFormats' => [
+                            'minute' => 'dd.MM HH:mm', 
+                        ],
+                        'tooltipFormat' => 'HH:mm', 
                     ],
-                     'tooltipFormat' => 'HH:mm'
-                        
-                    
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Time',
+                    ],
                  
                 ],
             ],
