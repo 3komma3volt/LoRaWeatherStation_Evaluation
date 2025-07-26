@@ -40,7 +40,7 @@ Encore
      * https://symfony.com/doc/current/frontend.html#adding-more-features
      */
     .cleanupOutputBeforeBuild()
-    .enableBuildNotifications()
+    .enableBuildNotifications(process.env.DISABLE_NOTIFIER !== '1')
     .enableSourceMaps(!Encore.isProduction())
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
@@ -59,10 +59,16 @@ Encore
      .copyFiles({
             from: './assets/images',
             to: 'images/[path][name].[ext]',
+            pattern: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/, 
+           
         })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
+    .enableSassLoader((options) => {
+    options.sassOptions = {
+        quietDeps: true
+    };
+})
 
 
     // uncomment if you use TypeScript

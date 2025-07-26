@@ -53,3 +53,6 @@
 
 /migrations
 /node_modules
+/deployment
+/public/build
+.env.prod

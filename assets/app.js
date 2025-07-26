@@ -1,8 +1,11 @@
 import './bootstrap.js';
 
+
 import './styles/app.scss';
 const $ = require('jquery');
 global.$ = global.jQuery = $;
+
+import './js/navjs.js';
 
 import 'chartjs-adapter-date-fns';
 require('bootstrap');

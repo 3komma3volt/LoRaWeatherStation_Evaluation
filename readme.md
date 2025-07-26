@@ -58,3 +58,15 @@ Shows a list of selected stations and all weather data. If at least two stations
 ![Uplink](assets/documentation/uplink.png)
 
 From now on, the Webhook will send the station data JSON encoded to the Evaluation Tool and it will store the data into the MariaDB database.
+
+# Used libraries
+
+[Weather Icons by Erik Flowers](https://github.com/erikflowers/weather-icons)
+
+[Bootstrap](https://getbootstrap.com/)
+
+[Chart.js](https://www.chartjs.org/)
+
+[Symfony](https://symfony.com/) 
+
+[MariaDB](https://mariadb.org/)
