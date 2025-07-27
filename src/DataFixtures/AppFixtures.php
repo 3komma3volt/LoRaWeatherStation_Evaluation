@@ -1,5 +1,8 @@
 <?php
 
+// Used for creating simulated stations and weather data
+// This file is used to populate the database with initial data for testing purposes.
+
 namespace App\DataFixtures;
 
 use DateTime;

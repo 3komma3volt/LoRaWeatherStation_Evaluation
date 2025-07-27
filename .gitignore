@@ -56,3 +56,6 @@
 /deployment
 /public/build
 .env.prod
+.env
+prepare_deployment.bat
+start_server.bat

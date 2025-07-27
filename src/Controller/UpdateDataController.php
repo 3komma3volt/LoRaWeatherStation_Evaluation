@@ -48,9 +48,9 @@ class UpdateDataController extends AbstractController
         if(isset($station_rain) && intval($station_rain == 0xFF)) {
           $station_rain = null;
         }
-       
-//        $station_raw_payload = $data->uplink_message->frm_payload ?? null;  // No neccessary to store this information.
-        $gtw_id = $data->uplink_message->rx_metadata[0]->gateway_ids->gateway_id ?? null; 
+
+//        $station_raw_payload = $data->uplink_message->frm_payload ?? null;  // Not necessary to store this information.
+        $gtw_id = $data->uplink_message->rx_metadata[0]->gateway_ids->gateway_id ?? null;
         $gtw_rssi = $data->uplink_message->rx_metadata[0]->rssi ?? null;
         $gtw_snr = $data->uplink_message->rx_metadata[0]->snr ?? null;
 

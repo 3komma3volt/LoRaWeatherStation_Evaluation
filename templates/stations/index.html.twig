@@ -4,7 +4,7 @@
 
 	<div class="container">
 		<div class="text-center mt-5  mb-3">
-			<h1>Ilmweather Stations</h1>
+			<h1>Stations</h1>
 		</div>
 
 		<form action="{{ path('app_compare') }}" method="POST">
@@ -12,13 +12,12 @@
 				<tbody>
 
 					{% for station in weather_stations %}
-              {#       {% set compareEnabled = date(station.lastUpdate) < date('-30 minutes') ? 'disabled' : '' %} #}
-    {% set compareEnabled = '' %}
+                     {% set compareEnabled = date(station.lastUpdate) < date('-30 minutes') ? 'disabled' : '' %}
 						<tr>
 							<td class="align-middle" width="1%">
 								<input class="form-check-input" type="checkbox" value="{{ station.devid }}" {{compareEnabled}} name="stations[]"></td>
 							<td class="align-middle w-auto">
-								<h5 class="mb-1"><a href = "{{ path('app_station_detail', {id: station.devid }) }}" class="link-offset-2 link-underline link-light link-underline-opacity-0">{{ station.alias }}</a></h5>
+								<h5 class="mb-1"><a href = "{{ path('app_station_detail', {id: station.devid }) }}" class="link-underline link-underline-opacity-0">{{ station.alias }}</a></h5>
 								{{ station.lastUpdate | date("d.m.Y H:i:s") }}
 							</td>
 							<td class="align-middle text-end">

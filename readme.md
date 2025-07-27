@@ -59,6 +59,43 @@ Shows a list of selected stations and all weather data. If at least two stations
 
 From now on, the Webhook will send the station data JSON encoded to the Evaluation Tool and it will store the data into the MariaDB database.
 
+Currently there is no administration page, so you have to setup you station manually within the database. There you can enter an alias name and information like station location and altitude (needed for pressure calculation). You can also set its status like Beta test mode by editing the entry in the database.
+
+
+## Integrating Home Assistant Sensors
+
+If you have e.g. a temperature sensor which is read by Home Assistant you can send its data to the weather system using a restful request. For this, simulate a JSON request from TTN. This would look like this:
+
+```yaml
+update_weather_data_v3:
+  url: >-
+    https://weathersystem.yoururl/updatedata
+  method: POST
+  content_type: application/json
+  payload: >
+    {
+      "end_device_ids": {
+        "device_id": "Your unique ID"
+      },
+      "uplink_message": {
+        "decoded_payload": {
+          "temperature": {{ states('sensor.temperature') }},
+          "wind": {{ states('sensor.windspeed') }},
+          "brightness": {{ states('sensor.brightness') }}
+        },
+        "rx_metadata": [
+          {
+            "gateway_ids": {
+              "gateway_id": "WEB"
+            }
+          }
+        ]
+      }
+    }
+```
+
+Then make an automation which calls the request every x minutes to upload the sensor data. Name the gateway ID as you want. E.g "WEB" to make a difference to an TTN gateway.
+
 # Used libraries
 
 [Weather Icons by Erik Flowers](https://github.com/erikflowers/weather-icons)
