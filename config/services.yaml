@@ -8,6 +8,7 @@ parameters:
     system_latitude: 50.68
     system_longitude: 10.91
     system_transmission_time: 5 # time usually between data transmission
+    .container.dumper.inline_factories: true
 services:
     # default configuration for services in *this* file
     _defaults:

@@ -21,7 +21,7 @@ class StationsExtension extends AbstractExtension
         });
     }
 
-    public function getFunctions()
+    public function getFunctions(): array 
     {
         return [
             new TwigFunction('getStationNames', [$this, 'getstationNames']),
@@ -31,5 +31,5 @@ class StationsExtension extends AbstractExtension
     public function getstationNames()
     {
         return $this->stationsNames;
-    }
+    } 
 }

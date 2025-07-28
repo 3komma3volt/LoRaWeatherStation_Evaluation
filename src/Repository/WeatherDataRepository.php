@@ -55,25 +55,30 @@ class WeatherDataRepository extends ServiceEntityRepository
             $avgCnt['cnt_' . $data] = 0;
         }
 
+        $sql = "
+        SELECT wd.*
+        FROM weather_data wd
+        INNER JOIN weather_stations ws ON wd.dev_id = ws.dev_id
+        INNER JOIN (
+            SELECT dev_id, MAX(id) as max_id
+            FROM weather_data
+            GROUP BY dev_id
+        ) latest ON wd.dev_id = latest.dev_id AND wd.id = latest.max_id
+        WHERE JSON_EXTRACT(ws.status, '$.dashboardignore') != 'true'
+        AND ws.last_update >= :thirtyMinutesAgo
+        AND JSON_EXTRACT(ws.status, '$.invisible') != 'true'
+        ";
 
-        $qb = $this->entityManager->createQueryBuilder();
-
-        $subQuery = $this->entityManager->createQueryBuilder()
-            ->select('MAX(wd_sub.id)')
-            ->from(WeatherData::class, 'wd_sub')
-            ->where('wd_sub.dev_id = wd.dev_id')
-            ->getDQL();
-
-        $qb->select('wd')
-            ->from(WeatherData::class, 'wd')
-            ->where($qb->expr()->in('wd.id', $subQuery))
-            ->andWhere("JSON_EXTRACT(ws.status, '$.dashboardignore') != 'true'")
-            ->andWhere('ws.last_update >= :thirtyMinutesAgo')
-            ->setParameter('thirtyMinutesAgo', new \DateTime('-30 minutes'))
-            ->join(WeatherStations::class, 'ws', Join::WITH, 'wd.dev_id = ws.dev_id');
-
-        $result = ($qb->getQuery()->getArrayResult());
-
+    $stmt = $this->entityManager->getConnection()->prepare($sql);
+    $stmt->bindValue('thirtyMinutesAgo', (new \DateTime('-30 minutes'))->format('Y-m-d H:i:s'));
+    
+    $result = $stmt->executeQuery()->fetchAllAssociative();
+     if (!$result) {
+            return [
+                'avgMeasurements' => $avgMeasurements,
+                'stationCount' => 0
+            ];
+        }
 
         foreach ($result as $res) {
             foreach ($res as $key => $value) {
