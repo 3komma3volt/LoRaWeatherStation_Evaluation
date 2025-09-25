@@ -25,15 +25,16 @@ class StationsController extends AbstractController
     #[Route('/stations/{id}', name: 'app_station_detail')]
     public function stationDetail(
         $id,
-        WeatherDataRepository $weatherData,
+        WeatherDataRepository $weatherDataRepository,
         WeatherStationsRepository $stations
     ): Response
     {
-        $weatherData = $weatherData->getStationWeatherData($id);
-        $stationDetails = $stations->getStationsDetails(false, $id);
+        $weatherData = $weatherDataRepository->getStationWeatherData($id);
+        $stationDetails = $stations->getStationsDetails($id, false);
         $stationStatus = $stations->getStationStatus($id);
 
-
+        $pressureData = $weatherDataRepository->getStationPressure($id, 8);
+      //  dd($pressureData);
 //dd(UiService::getIsMeasurement());
 
         return $this->render('stations/station_details.html.twig', [
@@ -56,12 +57,12 @@ class StationsController extends AbstractController
     #[Route('/stations/{id}/json', name: 'app_station_detail_json')]
     public function stationDetailJson(
         $id,
-        WeatherDataRepository $weatherData,
+        WeatherDataRepository $weatherDataRepository,
         WeatherStationsRepository $stations
     ): JsonResponse
     {
-        $weatherData = $weatherData->getStationWeatherData($id);
-        $stationDetails = $stations->getStationsDetails(false, $id);
+        $weatherData = $weatherDataRepository->getStationWeatherData($id);
+        $stationDetails = $stations->getStationsDetails($id, false);
         
         $jsonData = array(
             ...$stationDetails,

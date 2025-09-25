@@ -27,7 +27,11 @@ class GraphController extends AbstractController
         UiService $uiservice
     ): Response {
 
-        $stationDetails = $stations->getStationsDetails(false, $id);
+        if ($timespan > (int)$_ENV['MAX_TIMESPAN_HOURS']) {
+            $timespan = (int)$_ENV['MAX_TIMESPAN_HOURS'];
+        }
+
+        $stationDetails = $stations->getStationsDetails($id, false);
         $weather = $weatherData->getWeatherData($id, $timespan);
 
         $datetimeArray = $weather['datetime_readable'];
@@ -56,6 +60,7 @@ class GraphController extends AbstractController
             $measurementChart->setOptions([
                 'responsive' => true,
                 'maintainAspectRatio' => false,
+               
                 'plugins' => [
                     'legend' => [
                         'display' => false,
@@ -73,11 +78,15 @@ class GraphController extends AbstractController
                 ],
             ]);
             if (in_array($key, UiService::IS_MEASUREMENT)) {
-               
+               $measurementChart->setOptions([
+                'aspectRatio' => 2.5,
+                ]);
                 $dataCharts[UiService::getMeasurementNames()[$key]] = $measurementChart;
             }
             else if (in_array($key, UiService::IS_DETAILLED_ATTRIBUTE)) {
-            
+                           $measurementChart->setOptions([
+                'aspectRatio' => 3,
+                ]);
                 $detailedCharts[UiService::getMeasurementNames()[$key]] = $measurementChart;
             }
         }
@@ -96,6 +105,10 @@ class GraphController extends AbstractController
         $timespan,
         WeatherDataRepository $weatherData,
     ): BinaryFileResponse {
+
+        if ($timespan > (int)$_ENV['MAX_TIMESPAN_HOURS']) {
+            $timespan = (int)$_ENV['MAX_TIMESPAN_HOURS'];
+        }
 
         $weather = $weatherData->getWeatherData($id, $timespan);
 

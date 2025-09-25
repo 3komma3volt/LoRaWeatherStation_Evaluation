@@ -7,18 +7,17 @@ use Twig\TwigFunction;
 use Twig\Extension\AbstractExtension;
 use Symfony\Contracts\Cache\CacheInterface;
 use App\Repository\WeatherStationsRepository;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class StationsExtension extends AbstractExtension
 {
-    private $stationsNames;
+    private $weatherStationsRepository;
     private $cache;
 
     public function __construct(WeatherStationsRepository $ws, CacheInterface $cache)
     {
+        $this->weatherStationsRepository = $ws;
         $this->cache = $cache;
-        $this->stationsNames = $this->cache->get('station_names', function () use ($ws) {
-            return $ws->getStations(true, true);
-        });
     }
 
     public function getFunctions(): array 
@@ -30,6 +29,9 @@ class StationsExtension extends AbstractExtension
 
     public function getstationNames()
     {
-        return $this->stationsNames;
-    } 
+        return $this->cache->get('station_names', function (ItemInterface $item) {
+            $item->expiresAfter(3600);
+            return $this->weatherStationsRepository->getStations(true, true);
+        });
+    }
 }

@@ -1,1 +1,3 @@
 *.css linguist-vendored
+*.less linguist-vendored
+*.scss linguist-vendored

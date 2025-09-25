@@ -41,7 +41,11 @@ class WeatherDataRepository extends ServiceEntityRepository
         $this->entityManager = $entityManager;
     }
 
-
+    /**
+     * Get average measurements and station count for the dashboard.
+     *
+     * @return array An array containing average measurements and station count.
+     */
     public function getDashboardData()
     {
         $avgMeasurements = [];
@@ -101,6 +105,12 @@ class WeatherDataRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * Get the latest weather data for a specific device.
+     *
+     * @param string $devId The device ID.
+     * @return array|null An array containing the latest weather data or null if no data exists.
+     */
     public function getStationWeatherData(string $devId)
     {
         // todo: change entities and add many-to-one relation
@@ -143,6 +153,12 @@ class WeatherDataRepository extends ServiceEntityRepository
         return $result;
     }
 
+    /**
+     * Get the last recorded time for a specific device.
+     *
+     * @param string $devId The device ID.
+     * @return \DateTime|null The last recorded time or null if no data exists.
+     */
     private function getLastTime($devId)
     {
         $latestEntry = $this->createQueryBuilder('wd')
@@ -159,6 +175,13 @@ class WeatherDataRepository extends ServiceEntityRepository
         return $latestEntry->getDatetime();
     }
 
+    /**
+     * Get the latest rain data for a specific device within a given time span.
+     *
+     * @param string $devId The device ID.
+     * @param int $timeSpan The time span in hours (default is 1).
+     * @return array An array containing the rain data.
+     */
     public function getStationRain(string $devId, $timeSpan = 1)
     {
 
@@ -180,7 +203,39 @@ class WeatherDataRepository extends ServiceEntityRepository
         return array_column($results, 'data_rain');
     }
 
-    public function getWeatherData(string $devId, int $timeSpan): array
+    /**
+     * Get the latest pressure data for a specific device within a given time span.
+     * Neccessary for forecast calculations and faster than getWeatherData.
+     *
+     * @param string $devId The device ID.
+     * @param int $timeSpan The time span in hours (default is 1).
+     * @return array An array containing the pressure data.
+     */
+    public function getStationPressure(string $devId, $timeSpan = 1)
+    {
+        $latestEntry = $this->getLastTime($devId);
+        $startTime = (clone $latestEntry)->modify("-{$timeSpan} hour");
+
+        $qb = $this->createQueryBuilder('wd')
+            ->select('wd.data_pressure')
+            ->where('wd.dev_id = :deviceId')
+            ->andWhere('wd.datetime BETWEEN :oneHourBefore AND :lastEntryTime')
+            ->setParameter('deviceId', $devId)
+            ->setParameter('oneHourBefore', $startTime)
+            ->setParameter('lastEntryTime', $latestEntry)
+            ->orderBy('wd.datetime', 'DESC');
+
+        return $qb->getQuery()->getSingleColumnResult();
+    }
+
+    /**
+     * Get weather data for a specific device within a given time span.
+     *
+     * @param string $devId The device ID.
+     * @param int $timeSpan The time span in hours (default is 8).
+     * @return array An array containing the weather data.
+     */
+    public function getWeatherData(string $devId, int $timeSpan = 8): array
     {
         $latestEntry = $this->getLastTime($devId);
         $startTime = (clone $latestEntry)->modify("-{$timeSpan} hour");

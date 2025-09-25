@@ -48,9 +48,8 @@ class WeatherStationsRepository extends ServiceEntityRepository
     }
 
     public function getStationsDetails(
-        bool $ignore_invisible_stations = true, string $dev_id = null
-
-    ) {
+        string $dev_id = null, 
+        bool $ignore_invisible_stations = true) {
         $db = $this->createQueryBuilder('w');
 
         if ($ignore_invisible_stations) {
