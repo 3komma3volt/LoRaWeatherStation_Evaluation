@@ -123,11 +123,18 @@ class WeatherDataRepository extends ServiceEntityRepository
         ->setParameter('deviceId', $devId)
         ->orderBy('wd.datetime', 'DESC')
         ->setMaxResults(1);
-        $result = $qb->getQuery()->getArrayResult()[0];
+
+        $result = $qb->getQuery()->getArrayResult();
 
         if(!$result) {
             return null;
         }
+
+        if(count($result) == 0) {
+            return null;
+        }
+
+        $result = $result[0];
 
         if ($result['data_temperature'] && $result['data_humidity']) {
             $dp = new DewPoint();
@@ -186,7 +193,9 @@ class WeatherDataRepository extends ServiceEntityRepository
     {
 
         $latestEntry = $this->getLastTime($devId);
-
+        if (!$latestEntry) {
+            return [];
+        }
         $startTime = (clone $latestEntry)->modify("-{$timeSpan} hour");
 
         $qb = $this->createQueryBuilder('wd')
@@ -214,6 +223,9 @@ class WeatherDataRepository extends ServiceEntityRepository
     public function getStationPressure(string $devId, $timeSpan = 1)
     {
         $latestEntry = $this->getLastTime($devId);
+        if (!$latestEntry) {
+            return [];
+        }
         $startTime = (clone $latestEntry)->modify("-{$timeSpan} hour");
 
         $qb = $this->createQueryBuilder('wd')
@@ -238,6 +250,9 @@ class WeatherDataRepository extends ServiceEntityRepository
     public function getWeatherData(string $devId, int $timeSpan = 8): array
     {
         $latestEntry = $this->getLastTime($devId);
+        if (!$latestEntry) {
+            return [];
+        }
         $startTime = (clone $latestEntry)->modify("-{$timeSpan} hour");
         $qb = $this->createQueryBuilder('wd')
             ->where('wd.dev_id = :deviceId')

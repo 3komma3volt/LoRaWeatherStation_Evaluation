@@ -14,6 +14,51 @@
 			<h1>{{stationData['alias']}}</h1>
 		</div>
 
+		 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+		<div id="configPanel" class="mb-3">
+			<div class="card">
+				<div class="card-header" id="headingOne">
+					<h5 class="mb-0">
+						<button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#collapsedConfig" aria-expanded="true" aria-controls="collapsedConfig">
+							<i class="bi bi-wrench"></i>
+							Configuration
+						</button>
+					</h5>
+				</div>
+				<div id="collapsedConfig" class="collapse" aria-labelledby="headingOne" data-parent="#configPanel">
+					<div class="card-body">
+					{{ form_start(form, {
+ 					 'action': path('app_station_update', { id: stationData['dev_id'] }),
+  						'method': 'POST',
+  						'attr': {'novalidate': 'novalidate'}
+						}) }}
+       					{{ form_row(form.alias) }}
+						{{ form_row(form.description) }}
+						<div class="row">
+						  <div class="col-md-4">{{ form_row(form.latitude) }}</div>
+						  <div class="col-md-4">{{ form_row(form.longitude) }}</div>
+						  <div class="col-md-4">{{ form_row(form.altitude) }}</div>
+						</div>
+
+						<div class="input-group mb-2">
+						  <span class="input-group-text">Station Status</span>
+						  <div class="form-control py-1">
+						    {% for child in form.status %}
+						      <div class="form-check form-check-inline me-3">
+						        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+						        {{ form_label(child, null, {'label_attr': {'class': 'form-check-label ms-1'}}) }}
+						      </div>
+						    {% endfor %}
+							  </div>
+						</div>
+						<button type="submit" class="btn btn-sm btn-primary">Save</button>
+						{{ form_end(form) }}
+					</div>
+				</div>
+			</div>
+		</div>
+{% endif  %}
+
 		<table class="table table-hover table-responsive-sm">
 			{% for key, value in weatherData %}
 				{% if key in isMeasurement and value is not null %}
@@ -51,7 +96,7 @@
 			<div class="card">
 				<div class="card-header" id="headingOne">
 					<h5 class="mb-0">
-						<button class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#collapsedDetails" aria-expanded="true" aria-controls="collapsedDetails">
+						<button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#collapsedDetails" aria-expanded="true" aria-controls="collapsedDetails">
 							<i class="bi bi-search"></i>
 							Details
 						</button>
@@ -96,9 +141,10 @@
 					</div>
 				</div>
 			</div>
-			<a class="btn btn-outline-primary mt-2 mb-2" href="{{path('app_graph', {id: stationData['dev_id']})}}" role="button">
+			<a class="btn btn-sm btn-outline-primary mt-2 mb-2" href="{{path('app_graph', {id: stationData['dev_id']})}}" role="button">
 				<i class="bi bi-graph-up"></i>
 				Show History Graph</a>
 		</div>
+ 
 	</div>
 {% endblock %}

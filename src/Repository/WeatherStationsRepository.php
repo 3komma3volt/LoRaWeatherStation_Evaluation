@@ -61,6 +61,9 @@ class WeatherStationsRepository extends ServiceEntityRepository
             $db->setParameter('dev_id', $dev_id);
             $db->setMaxResults(1);
             $results = $db->getQuery()->getArrayResult();
+            if(count($results) == 0) {
+                return null;
+            }
             return $results[0];
         }
         else {
@@ -81,6 +84,9 @@ class WeatherStationsRepository extends ServiceEntityRepository
             ->getQuery();
 
         $result = $qb->getOneOrNullResult();
+        if (!$result) {
+            return null;
+        }
         return $result['status'];
     }
 

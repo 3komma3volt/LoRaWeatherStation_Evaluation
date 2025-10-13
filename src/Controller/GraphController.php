@@ -60,6 +60,7 @@ class GraphController extends AbstractController
             $measurementChart->setOptions([
                 'responsive' => true,
                 'maintainAspectRatio' => false,
+                'responsive' => false,
                
                 'plugins' => [
                     'legend' => [

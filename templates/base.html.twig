@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
         <meta name="author" content="">
-        <title>Ilmweather 3.0.0</title>
+        <title>Ilmweather 3.1.0</title>
         <!-- Favicon-->
         <link rel="icon" type="image/jpg" href="{{ asset('build/images/favicon.ico') }}" />
         {% block stylesheets %}
@@ -20,9 +20,9 @@
     <body>
 
     {{ include('_navbar.html.twig') }}
-
-
-   {% block body %}{% endblock %}
+    {{ include('_flashes.html.twig') }}
+   {% block body %}
+   {% endblock %}
     </body>
 
     <div class="container mt-5 mb-3"></div>

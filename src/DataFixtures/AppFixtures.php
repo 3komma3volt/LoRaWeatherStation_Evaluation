@@ -68,7 +68,7 @@ class AppFixtures extends Fixture
         $date = new DateTime("now", new DateTimeZone('Europe/Amsterdam'));
 
         $startTime = clone $date;
-        $startTime->modify('-500 minutes');
+        $startTime->modify('-1440 minutes');
         $endTime = clone $date;
         $interval = new DateInterval('PT5M');
         $period = new DatePeriod($startTime, $interval, $endTime);
@@ -76,7 +76,7 @@ class AppFixtures extends Fixture
         $steps = 0;
         foreach ($period as $dt) {
 
-            echo $dt->format("d.m.Y H:i:s") . "\n";
+            //echo $dt->format("d.m.Y H:i:s") . "\n";
 
             $station_1_2_temp = rand(15, 25);
 
