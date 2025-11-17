@@ -32,7 +32,7 @@ class UpdateDataController extends AbstractController
       }
 
         $station_temperature = $data->uplink_message->decoded_payload->temperature ?? null;
-        $station_humidity = $data->uplink_message->decoded_payload->humidity;
+        $station_humidity = $data->uplink_message->decoded_payload->humidity ?? null;
         $station_pressure = $data->uplink_message->decoded_payload->pressure ?? null;
         $station_battery = $data->uplink_message->decoded_payload->battery ?? null;
         $station_rain = $data->uplink_message->decoded_payload->rain ?? null;

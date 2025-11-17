@@ -32,5 +32,15 @@ class UsersFixtures extends Fixture
         $manager->persist($user);
 
         $manager->flush();
+
+        echo "Creating API test user: api_user / password\n";
+        $user = new Users();
+        $user->setEmail('apiuser@example.com');
+        $user->setName('api_user');
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, 'password'));
+        $user->setRoles(['ROLE_API_USER']);
+        $manager->persist($user);
+
+        $manager->flush();
     }
 }

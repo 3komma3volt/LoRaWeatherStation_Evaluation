@@ -57,6 +57,8 @@ Shows a list of selected stations and all weather data. If at least two stations
   
 ![Uplink](assets/documentation/uplink.png)
 
+Set authentication to: basic auth and add username and password generated. (todo: add usermanagement in admin panel)
+
 From now on, the Webhook will send the station data JSON encoded to the Evaluation Tool and it will store the data into the MariaDB database.
 
 Currently there is no administration page, so you have to setup you station manually within the database. There you can enter an alias name and information like station location and altitude (needed for pressure calculation). You can also set its status like Beta test mode by editing the entry in the database.
