@@ -3,7 +3,7 @@
 This is the evaluation tool for the [LoRa Weather Station Project](https://github.com/3komma3volt/LoRaWeatherStation_Hardware).
 The project started as a small single file PHP script using MariaDB and small own CSS stylesheets for visualizing weather data. After growing the number of weather stations, the script was rewritten and uses responsive Bootstrap and chart.js for the frontend. The features have grown even more and was rewritten again using Symfony 7.
 
-> Note: Not all described features are available in Symfony version. There are still some implementations missing.
+> Note: Weather forecast not available in Symfony version (yet).
 
 
 ## Features
@@ -24,11 +24,10 @@ Lists all available stations. Shows a stations as offline, if the last received 
 
 ![Station](assets/documentation/station.png)
 
-> Weather forecast and some calculated weather data are not implemented yet in the Symfony version
+> Weather forecast is not implemented yet in the Symfony version
 
 Shows all weather data of a selected station. Since every station can have different sensors, the shown data differs between the stations. A detail view shows a bit more information like signal strength, battery voltage.. The station data can be read as JSON and used e.g. in a home automation.
 
-> Some calculations are not implemented yet in the Symfony version e.g. weather prediction
 
 ![Station details](assets/documentation/details.png)
  
@@ -70,6 +69,8 @@ If you have e.g. a temperature sensor which is read by Home Assistant you can se
 
 ```yaml
 update_weather_data_v3:
+  username: !secret weather_user
+  password: !secret weather_pass
   url: >-
     https://weathersystem.yoururl/updatedata
   method: POST
@@ -95,6 +96,14 @@ update_weather_data_v3:
       }
     }
 ```
+
+In the security.yaml add the credentials:
+
+```yaml
+weather_user: api@example.com
+weather_pass: the_api_user_password
+```
+
 
 Then make an automation which calls the request every x minutes to upload the sensor data. Name the gateway ID as you want. E.g "WEB" to make a difference to an TTN gateway.
 
