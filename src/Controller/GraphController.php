@@ -60,7 +60,6 @@ class GraphController extends AbstractController
             $measurementChart->setOptions([
                 'responsive' => true,
                 'maintainAspectRatio' => false,
-                'responsive' => false,
                
                 'plugins' => [
                     'legend' => [
@@ -79,15 +78,15 @@ class GraphController extends AbstractController
                 ],
             ]);
             if (in_array($key, UiService::IS_MEASUREMENT)) {
-               $measurementChart->setOptions([
+             /*  $measurementChart->setOptions([
                 'aspectRatio' => 2.5,
-                ]);
+                ]);*/
                 $dataCharts[UiService::getMeasurementNames()[$key]] = $measurementChart;
             }
             else if (in_array($key, UiService::IS_DETAILLED_ATTRIBUTE)) {
-                           $measurementChart->setOptions([
+            /*               $measurementChart->setOptions([
                 'aspectRatio' => 3,
-                ]);
+                ]);*/
                 $detailedCharts[UiService::getMeasurementNames()[$key]] = $measurementChart;
             }
         }
